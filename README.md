@@ -12,7 +12,7 @@ C++ came in the game : https://www.youtube.com/watch?v=JBjjnqG0BP8
 
 - Then garbage collector language like Java, C#, python to name few of them
 
-![What is garbage collector](/home/arnaud/Downloads/garbage-collector.jpg)
+![What is garbage collector](assets/garbage-collector.jpg)
 
 - What's a garbage collector?
 
