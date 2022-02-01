@@ -23,7 +23,9 @@ func test() {
 	fmt.Println()
 	flag.Parse()
 	defer measure(time.Now(), fmt.Sprintf("Sending %d messages", *maxCount))
+
 	finalOutput := make(chan int)
+	
 	var left, right chan int = nil, finalOutput
 	for i := 0; i < *maxCount; i++ {
 		left, right = right, make(chan int)
