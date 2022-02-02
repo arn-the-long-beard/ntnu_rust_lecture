@@ -1,0 +1,1 @@
+/usr/bin/c++  -g   CMakeFiles/cpp_allocation.dir/main.cpp.o  -o cpp_allocation 
