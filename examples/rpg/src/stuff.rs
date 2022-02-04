@@ -23,11 +23,11 @@ impl Stuff {
         self.second_weapon = Some(Rc::new(second_weapon))
     }
 
-    fn unset_first_weapon(&mut self) {
+    pub fn unset_first_weapon(&mut self) {
         self.first_weapon = None;
     }
 
-    fn unset_second_weapon(&mut self) {
+    pub fn unset_second_weapon(&mut self) {
         self.second_weapon = None;
     }
 
