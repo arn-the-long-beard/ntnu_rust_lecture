@@ -2,7 +2,7 @@ use crate::item::{Armor, HandheldType, Weapon};
 use std::rc::Rc;
 
 /// https://stackoverflow.com/questions/49377231/when-to-use-rc-vs-box
-/// Option on Rc is maybe useless, I could use default value for Weapon as well.
+/// Option on Rc is maybe useless, I could use default value for Weapon & Armor as well.
 #[derive(Default)]
 pub struct Stuff {
     armor: Option<Rc<dyn Armor>>,
@@ -46,7 +46,7 @@ impl Stuff {
     /// We could have specific trait for weapons to be used with both Hands.
     /// Ex : SingleHand Item could have a trait "BothHand", and restrict this trait for second hand.
     ///
-    pub fn add_weapon<W: 'static + Weapon>(mut self, weapon: W) -> Self {
+    pub fn equip_weapon<W: 'static + Weapon>(mut self, weapon: W) -> Self {
         match weapon.handheld_type() {
             HandheldType::SingleHand => {
                 if let Some(current_weapon) = self.first_weapon() {
@@ -78,8 +78,20 @@ impl Stuff {
                 self.set_first_weapon(weapon);
             }
         }
-
         self
+    }
+
+    ///Calculate how much damage the equipped weapon can do
+    pub fn calculate_damages(&self) -> RawDamages {
+        let mut damages: RawDamages = 0.0;
+
+        if let Some(first_weapon) = self.first_weapon() {
+            damages = *first_weapon.damages();
+        }
+        if let Some(second_weapon) = self.second_weapon() {
+            damages = *second_weapon.damages();
+        }
+        damages
     }
 }
 
@@ -120,63 +132,8 @@ mod test {
     fn get_steel_shield() -> Shield {
         Shield::new("Steel Shield", 35.0, 7.0)
     }
-
     #[test]
-    /// Let's see when we move the first weapon as second
-    /// Let's see if using just one weapon works
-    fn use_single_hand_weapon() {
-        let long_iron_sword = get_long_iron_sword();
-        let long_steel_sword = get_long_steel_sword();
-        let steel_shield = get_steel_shield();
-
-        let mut stuff = Stuff::new(
-            None,
-            Some(Rc::new(long_iron_sword)),
-            Some(Rc::new(steel_shield)),
-        );
-
-        assert_eq!(
-            stuff.first_weapon.as_ref().unwrap().name().to_string(),
-            get_long_iron_sword().name()
-        );
-
-        assert_eq!(
-            stuff.second_weapon.as_ref().unwrap().name().to_string(),
-            get_steel_shield().name()
-        );
-
-        stuff = stuff.add_weapon(long_steel_sword);
-
-        assert_eq!(
-            stuff.first_weapon.as_ref().unwrap().name().to_string(),
-            get_long_steel_sword().name()
-        );
-
-        assert_eq!(
-            stuff.second_weapon.as_ref().unwrap().name().to_string(),
-            get_long_iron_sword().name()
-        );
-
-        stuff.unset_first_weapon();
-
-        assert!(stuff.first_weapon.is_none());
-
-        let sword = get_long_steel_sword();
-        stuff = stuff.add_weapon(sword);
-
-        assert_eq!(
-            stuff.first_weapon.as_ref().unwrap().name().to_string(),
-            get_long_steel_sword().name()
-        );
-
-        assert_eq!(
-            stuff.second_weapon.as_ref().unwrap().name().to_string(),
-            get_long_iron_sword().name()
-        );
-    }
-
-    #[test]
-    fn get_single_hand_weapon() {
+    fn use_single_hand_weapon_in_place_of_shield() {
         let long_iron_sword = get_long_iron_sword();
         let another_long_iron_sword = get_long_iron_sword();
         let steel_shield = get_steel_shield();
@@ -187,11 +144,38 @@ mod test {
             Some(Rc::new(steel_shield)),
         );
         // because of mut, need &mut self if we want to update partialy the object;
-        stuff = stuff.add_weapon(another_long_iron_sword);
+        stuff = stuff.equip_weapon(another_long_iron_sword);
 
         assert_eq!(
             stuff.first_weapon.as_ref().unwrap().name().to_string(),
             get_long_iron_sword().name()
+        );
+
+        assert_eq!(
+            stuff.second_weapon.as_ref().unwrap().name().to_string(),
+            get_long_iron_sword().name()
+        );
+    }
+
+    #[test]
+    /// Let's see when we move the first weapon as second
+    /// Let's see if using just one weapon works
+    fn replace_single_hand_weapons() {
+        let long_iron_sword = get_long_iron_sword();
+        let long_steel_sword = get_long_steel_sword();
+        let steel_shield = get_steel_shield();
+
+        let mut stuff = Stuff::new(
+            None,
+            Some(Rc::new(long_iron_sword)),
+            Some(Rc::new(steel_shield)),
+        );
+
+        stuff = stuff.equip_weapon(long_steel_sword);
+
+        assert_eq!(
+            stuff.first_weapon.as_ref().unwrap().name().to_string(),
+            get_long_steel_sword().name()
         );
 
         assert_eq!(
@@ -205,7 +189,7 @@ mod test {
         let steel_battle_axe = get_steel_battle_axe();
         let mut stuff = Stuff::new(None, Some(Rc::new(steel_battle_axe)), None);
         let long_iron_sword = get_long_iron_sword();
-        stuff = stuff.add_weapon(long_iron_sword);
+        stuff = stuff.equip_weapon(long_iron_sword);
         assert_eq!(
             stuff.first_weapon.as_ref().unwrap().name().to_string(),
             get_long_iron_sword().name()
@@ -214,7 +198,7 @@ mod test {
     }
 
     #[test]
-    fn get_two_hands_weapons() {
+    fn use_two_hands_weapons() {
         let steel_battle_axe = get_steel_battle_axe();
         let long_iron_sword = get_long_iron_sword();
         let steel_shield = get_steel_shield();
@@ -225,7 +209,7 @@ mod test {
             Some(Rc::new(steel_shield)),
         );
 
-        stuff = stuff.add_weapon(steel_battle_axe);
+        stuff = stuff.equip_weapon(steel_battle_axe);
 
         assert_eq!(
             stuff.first_weapon.as_ref().unwrap().name().to_string(),
@@ -236,7 +220,7 @@ mod test {
     }
 
     #[test]
-    fn get_shields() {
+    fn use_shields() {
         let long_iron_sword = get_long_iron_sword();
         let another_long_iron_sword = get_long_iron_sword();
         let steel_shield = get_steel_shield();
@@ -248,7 +232,7 @@ mod test {
             Some(Rc::new(steel_shield)),
         );
 
-        stuff = stuff.add_weapon(iron_shield);
+        stuff = stuff.equip_weapon(iron_shield);
 
         assert_eq!(
             stuff.second_weapon.as_ref().unwrap().name().to_string(),
@@ -256,8 +240,8 @@ mod test {
         );
 
         stuff = stuff
-            .add_weapon(get_iron_shield())
-            .add_weapon(get_steel_shield());
+            .equip_weapon(get_iron_shield())
+            .equip_weapon(get_steel_shield());
 
         assert_eq!(
             stuff.second_weapon.as_ref().unwrap().name().to_string(),
