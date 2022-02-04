@@ -1,11 +1,13 @@
 use crate::item::RegularWeapon;
 use crate::item::Weapon;
 use crate::item::*;
-use crate::stuff::Stuff;
+use crate::stuff::{Stuff, StuffConfig};
+use caith::Roller;
 
 pub struct Character {
     name: String,
     health: f32,
+    max_health: f32,
     stuff: Stuff,
 }
 
@@ -21,83 +23,119 @@ impl Character {
     }
 }
 
-enum EquippedWeapons<W1, W2> {
-    TwoHand(W1),
-    TwoWeapons { right_hand: W1, left_hand: W2 },
-    OneSingleRightWeapon { right_hand: W1 },
-}
-
-impl<W1, W2> EquippedWeapons<W1, W2>
-where
-    W1: Default + Weapon + Into<W2>,
-    W2: Default + Weapon,
-{
-    fn new(first_weapon: W1, second_weapons: Option<W2>) -> Self {
-        match first_weapon.handheld_type() {
-            HandheldType::TwoHands => EquippedWeapons::TwoHand(first_weapon),
-            HandheldType::SingleHand => {
-                if let Some(left_weapon) = second_weapons {
-                    EquippedWeapons::TwoWeapons {
-                        right_hand: first_weapon,
-                        left_hand: left_weapon,
-                    }
-                } else {
-                    EquippedWeapons::OneSingleRightWeapon {
-                        right_hand: first_weapon,
-                    }
-                }
-            }
-
-            HandheldType::OnlyLeft => EquippedWeapons::TwoWeapons {
-                right_hand: Default::default(),
-                left_hand: first_weapon.into(),
-            },
-        }
-    }
-
-    pub fn two_hands(weapon: W1) -> Self {
-        EquippedWeapons::TwoHand(weapon)
-    }
-
-    /// Take the actual right weapon and move it to left
-    pub fn replace_weapon(actual_weapon: W1, new_weapon: W1) -> Self {
-        EquippedWeapons::new(new_weapon, Some(actual_weapon.into()))
-    }
-
-    /// Take the actual right weapon and move it to left
-    pub fn add_weapon_to_left_hand(actual_weapon: W1, new_weapon: W1) -> Self {
-        EquippedWeapons::new(actual_weapon, Some(new_weapon.into()))
-    }
-}
-
 impl Character {
     pub fn new(name: &str, health: f32) -> Self {
         Character {
             name: name.to_string(),
             health,
+            max_health: health,
             stuff: Default::default(),
         }
     }
 
-    pub fn grab_weapon<W: Weapon + 'static>(mut self, new_weapon: W) -> Self
-    where
-        W: Weapon,
-    {
-        match new_weapon.handheld_type() {
-            HandheldType::SingleHand => {
-                if let Some(first_hand_weapon) = self.stuff.first_weapon() {
-                } else {
-                }
-            }
-            HandheldType::OnlyLeft => {}
-            HandheldType::TwoHands => {}
-        }
-
+    pub fn grab_weapon<W: Weapon + 'static>(mut self, new_weapon: W) -> Self {
+        self.stuff = self.stuff.equip_weapon(new_weapon);
         self
     }
 
-    pub fn equip_armor(mut self, armor: BodyArmor) -> Self {
-        self.armor = Some(armor);
+    pub fn grab_armor<A: Armor + 'static>(mut self, armor: A) -> Self {
+        self.stuff = self.stuff.equip_armor(armor);
         self
+    }
+
+    /// Block damage if the set of weapons allow it.
+    /// We could have specials skills there to unlock to apply as modified on the amount of blocked damages.
+    fn try_to_block(&self) -> Option<BlockedDamages> {
+        match self.stuff.get_weapon_settings() {
+            StuffConfig::DualWeapons => {
+                None // Could have skill to unlock blocking with dual weapon
+            }
+            StuffConfig::ShieldAndWeapon => self.stuff.get_first_weapon_blocking_damage(),
+            StuffConfig::TwoHandsWeapon => self.stuff.get_first_weapon_blocking_damage(),
+            StuffConfig::OnlyShied => self.stuff.get_first_weapon_blocking_damage(),
+            StuffConfig::OneSingleHandWeapon => self.stuff.get_first_weapon_blocking_damage(),
+            StuffConfig::OneWeaponAsSecondary => None,
+        }
+    }
+
+    pub fn get_attacked_by(&mut self, damages: RawDamages) {
+        // We could have armor skills to add to the calculation
+        let mut receive_damage = damages - self.get_armor();
+
+        if let Some(blocking_damage) = self.try_to_block() {
+            println!("{} will try to block the attack", self.name);
+
+            let result = Roller::new("1d6 : blocking").unwrap().roll().unwrap();
+            let blocking_dice_result = result.as_single().unwrap().get_total();
+            println!("Result : {} ", result.as_single().unwrap().get_total());
+
+            if blocking_dice_result < 4 {
+                eprintln!("{} failed blocking the attack ", self.name());
+            } else {
+                // We could have armor blocking to add to the calculation
+
+                receive_damage -= blocking_damage;
+                println!(
+                    "{} blocked {} with its weapon",
+                    self.name(),
+                    blocking_damage
+                )
+            }
+        }
+        println!("{} received {}", self.name, receive_damage);
+        self.health -= receive_damage;
+
+        if self.health < 0.0 {
+            self.health = 0.0
+        }
+    }
+    fn get_armor(&self) -> BlockedDamages {
+        self.stuff.get_armor_rating()
+    }
+
+    /// Get a status to describe the health of the character.
+    pub fn get_status(self) -> HealthStatus {
+        let percentage: u8 = ((self.max_health - self.health) / self.max_health) as u8 * 100;
+
+        match percentage {
+            0 => HealthStatus::Dead,
+            1..=10 => HealthStatus::AlmostDead,
+            11..=30 => HealthStatus::SeriouslyHurt,
+            31..=50 => HealthStatus::VeryHurt,
+
+            51..=75 => HealthStatus::VeryHurt,
+            76..=99 => HealthStatus::SlightlyHurt,
+            100 => HealthStatus::Healthy,
+            _ => {
+                //Rust require us to
+                println!(
+                    "{} % of maximum health, Did you get some magic ?",
+                    percentage
+                );
+                HealthStatus::Healthy
+            }
+        }
+    }
+    pub fn deal_damages(&self) -> RawDamages {
+        self.stuff.calculate_damages()
+    }
+}
+
+pub enum HealthStatus {
+    Dead,
+    AlmostDead,
+    SeriouslyHurt,
+    VeryHurt,
+    LightlyHurt,
+    SlightlyHurt,
+    Healthy,
+}
+
+#[cfg(test)]
+mod test {
+    use super::*;
+
+    fn get_test_player() -> Character {
+        Character::new("test", 1000.0)
     }
 }
