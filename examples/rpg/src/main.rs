@@ -15,7 +15,7 @@ fn main() {
     let iron_shield = Shield::new("Iron Shield", 25.0, 5.0);
     let steel_shield = Shield::new("Iron Shield", 35.0, 7.0);
 
-    let grand_ma_skyring = Character::<RegularWeapon>::new("Skyrim Grandma", 1500.00);
+    let grand_ma_skyrim = Character::<RegularWeapon>::new("Skyrim Grandma", 1500.00);
 
     let white_run_guard = Character::<RegularWeapon>::new("Olaf the dummy guard", 1500.00);
 }
