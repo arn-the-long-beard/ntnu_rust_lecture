@@ -1,5 +1,6 @@
-use crate::item::{Armor, HandheldType, Weapon};
+use crate::item::{Armor, HandheldType, RawDamages, Weapon};
 use std::rc::Rc;
+use std::sync::PoisonError;
 
 /// https://stackoverflow.com/questions/49377231/when-to-use-rc-vs-box
 /// Option on Rc is maybe useless, I could use default value for Weapon & Armor as well.
@@ -11,8 +12,8 @@ pub struct Stuff {
 }
 
 impl Stuff {
-    pub fn set_armor(&mut self, armor: Option<Rc<dyn Armor>>) {
-        self.armor = armor;
+    fn set_armor<A: 'static + Armor>(&mut self, armor: A) {
+        self.armor = Some(Rc::new(armor));
     }
 
     fn set_first_weapon<W: 'static + Weapon>(&mut self, first_weapon: W) {
@@ -31,7 +32,7 @@ impl Stuff {
         self.second_weapon = None;
     }
 
-    pub fn armor(&self) -> &Option<Rc<dyn Armor>> {
+    fn armor(&self) -> &Option<Rc<dyn Armor>> {
         &self.armor
     }
 
@@ -89,29 +90,15 @@ impl Stuff {
             damages = *first_weapon.damages();
         }
         if let Some(second_weapon) = self.second_weapon() {
-            damages = *second_weapon.damages();
+            damages += *second_weapon.damages();
         }
         damages
     }
 }
 
-impl Stuff {
-    pub fn new(
-        armor: Option<Rc<dyn Armor>>,
-        first_weapon: Option<Rc<dyn Weapon>>,
-        second_weapon: Option<Rc<dyn Weapon>>,
-    ) -> Self {
-        Stuff {
-            armor,
-            first_weapon,
-            second_weapon,
-        }
-    }
-}
-
 #[cfg(test)]
 mod test {
-    use crate::item::{HandheldType, Item, RegularWeapon, Shield};
+    use crate::item::{HandheldType, Item, RegularWeapon, Shield, Weapon};
     use crate::stuff::Stuff;
     use std::rc::Rc;
 
@@ -132,17 +119,17 @@ mod test {
     fn get_steel_shield() -> Shield {
         Shield::new("Steel Shield", 35.0, 7.0)
     }
+
     #[test]
     fn use_single_hand_weapon_in_place_of_shield() {
         let long_iron_sword = get_long_iron_sword();
         let another_long_iron_sword = get_long_iron_sword();
         let steel_shield = get_steel_shield();
 
-        let mut stuff = Stuff::new(
-            None,
-            Some(Rc::new(long_iron_sword)),
-            Some(Rc::new(steel_shield)),
-        );
+        let mut stuff = Stuff::default()
+            .equip_weapon(long_iron_sword)
+            .equip_weapon(steel_shield);
+
         // because of mut, need &mut self if we want to update partialy the object;
         stuff = stuff.equip_weapon(another_long_iron_sword);
 
@@ -165,11 +152,9 @@ mod test {
         let long_steel_sword = get_long_steel_sword();
         let steel_shield = get_steel_shield();
 
-        let mut stuff = Stuff::new(
-            None,
-            Some(Rc::new(long_iron_sword)),
-            Some(Rc::new(steel_shield)),
-        );
+        let mut stuff = Stuff::default()
+            .equip_weapon(long_iron_sword)
+            .equip_weapon(steel_shield);
 
         stuff = stuff.equip_weapon(long_steel_sword);
 
@@ -187,7 +172,7 @@ mod test {
     #[test]
     fn replace_two_hands_weapon_with_single() {
         let steel_battle_axe = get_steel_battle_axe();
-        let mut stuff = Stuff::new(None, Some(Rc::new(steel_battle_axe)), None);
+        let mut stuff = Stuff::default().equip_weapon(steel_battle_axe);
         let long_iron_sword = get_long_iron_sword();
         stuff = stuff.equip_weapon(long_iron_sword);
         assert_eq!(
@@ -203,11 +188,9 @@ mod test {
         let long_iron_sword = get_long_iron_sword();
         let steel_shield = get_steel_shield();
 
-        let mut stuff = Stuff::new(
-            None,
-            Some(Rc::new(long_iron_sword)),
-            Some(Rc::new(steel_shield)),
-        );
+        let mut stuff = Stuff::default()
+            .equip_weapon(long_iron_sword)
+            .equip_weapon(steel_shield);
 
         stuff = stuff.equip_weapon(steel_battle_axe);
 
@@ -226,11 +209,9 @@ mod test {
         let steel_shield = get_steel_shield();
         let iron_shield = get_iron_shield();
 
-        let mut stuff = Stuff::new(
-            None,
-            Some(Rc::new(long_iron_sword)),
-            Some(Rc::new(steel_shield)),
-        );
+        let mut stuff = Stuff::default()
+            .equip_weapon(long_iron_sword)
+            .equip_weapon(steel_shield);
 
         stuff = stuff.equip_weapon(iron_shield);
 
@@ -247,5 +228,34 @@ mod test {
             stuff.second_weapon.as_ref().unwrap().name().to_string(),
             get_steel_shield().name()
         );
+    }
+
+    #[test]
+    fn test_damages_with_shield_and_sword() {
+        let damages = Stuff::default()
+            .equip_weapon(get_long_steel_sword())
+            .equip_weapon(get_steel_shield())
+            .calculate_damages();
+
+        assert_eq!(
+            damages,
+            get_steel_shield().damages() + get_long_steel_sword().damages()
+        )
+    }
+
+    #[test]
+    fn test_damages_with_shield() {
+        let damages = Stuff::default()
+            .equip_weapon(get_steel_shield())
+            .calculate_damages();
+        assert_eq!(&damages, get_steel_shield().damages())
+    }
+
+    #[test]
+    fn test_damages_with_two_hands() {
+        let damages = Stuff::default()
+            .equip_weapon(get_steel_battle_axe())
+            .calculate_damages();
+        assert_eq!(&damages, get_steel_battle_axe().damages())
     }
 }
