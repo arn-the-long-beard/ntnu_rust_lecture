@@ -1,7 +1,9 @@
 mod character;
+mod dice;
 mod item;
 mod stuff;
 //use crate::character::Character;
+use caith::Roller;
 use item::*;
 
 fn main() {
@@ -17,7 +19,11 @@ fn main() {
     let steel_shield = Shield::new("steal Shield", 35.0, 7.0);
 
     // let grand_ma_skyrim = Character::<RegularWeapon>::new("Skyrim Grandma", 1500.00);
-    //
+
+    let res = dice::SkillDice::Initiative.dices_roll_result();
+
+    println!("result {}", res);
+
     // let white_run_guard = Character::<RegularWeapon>::new("Olaf the dummy guard", 1500.00);
 }
 

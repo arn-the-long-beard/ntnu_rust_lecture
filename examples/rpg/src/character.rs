@@ -1,3 +1,4 @@
+use crate::dice;
 use crate::item::RegularWeapon;
 use crate::item::Weapon;
 use crate::item::*;
@@ -58,18 +59,16 @@ impl Character {
         }
     }
 
-    pub fn get_attacked_by(&mut self, damages: RawDamages) {
+    pub fn get_attacked_by(&mut self, damages: RawDamages, attack_dice: u8) {
         // We could have armor skills to add to the calculation
         let mut receive_damage = damages - self.get_armor();
 
         if let Some(blocking_damage) = self.try_to_block() {
             println!("{} will try to block the attack", self.name);
 
-            let result = Roller::new("1d6 : blocking").unwrap().roll().unwrap();
-            let blocking_dice_result = result.as_single().unwrap().get_total();
-            println!("Result : {} ", result.as_single().unwrap().get_total());
+            let blocking_dice_result = dice::SkillDice::Initiative.dices_roll_result();
 
-            if blocking_dice_result < 4 {
+            if blocking_dice_result < attack_dice {
                 eprintln!("{} failed blocking the attack ", self.name());
             } else {
                 // We could have armor blocking to add to the calculation
