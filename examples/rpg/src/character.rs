@@ -1,9 +1,7 @@
-use crate::dice;
-use crate::item::RegularWeapon;
+use crate::dice::SkillDice;
 use crate::item::Weapon;
 use crate::item::*;
 use crate::stuff::{Stuff, StuffConfig};
-use caith::Roller;
 
 pub struct Character {
     name: String,
@@ -12,6 +10,7 @@ pub struct Character {
     stuff: Stuff,
 }
 
+#[allow(unused)]
 impl Character {
     pub fn name(&self) -> &str {
         &self.name
@@ -24,6 +23,7 @@ impl Character {
     }
 }
 
+#[allow(unused)]
 impl Character {
     pub fn new(name: &str, health: f32) -> Self {
         Character {
@@ -32,6 +32,12 @@ impl Character {
             max_health: health,
             stuff: Default::default(),
         }
+    }
+
+    /// Roll specific dice
+    /// Todo : We could add here skills modified
+    pub fn roll_dice(&self, skill: SkillDice) -> u8 {
+        skill.dices_roll_result(&self.name)
     }
 
     pub fn grab_weapon<W: Weapon + 'static>(mut self, new_weapon: W) -> Self {
@@ -93,7 +99,7 @@ impl Character {
         } else {
             println!("{} Will not block the attack", self.name);
         }
-        println!("{} received {}", self.name, receive_damage);
+        println!("{} received {} damages", self.name, receive_damage);
         self.health -= receive_damage;
 
         if self.health < 0.0 {

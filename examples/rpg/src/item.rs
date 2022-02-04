@@ -151,6 +151,7 @@ impl Weapon for RegularWeapon {
     }
 }
 
+#[allow(unused)]
 /// NB : Shield could be a trait instead of a struct as well.
 pub struct Shield {
     armor_rating: f32,
@@ -227,10 +228,4 @@ impl Shield {
             .set_handheld_type(HandheldType::OnlyLeft)
             .set_damages(bash_damages)
     }
-}
-
-enum DamageType {
-    Slashing,
-    Cleaving,
-    Bashing,
 }
