@@ -1,6 +1,5 @@
-use crate::item::{Armor, HandheldType, RawDamages, Weapon};
+use crate::item::*;
 use std::rc::Rc;
-use std::sync::PoisonError;
 
 /// https://stackoverflow.com/questions/49377231/when-to-use-rc-vs-box
 /// Option on Rc is maybe useless, I could use default value for Weapon & Armor as well.
@@ -82,7 +81,8 @@ impl Stuff {
         self
     }
 
-    ///Calculate how much damage the equipped weapon can do
+    ///Calculate how much damage the equipped weapons can do.
+    /// Bash damages from shield are counted
     pub fn calculate_damages(&self) -> RawDamages {
         let mut damages: RawDamages = 0.0;
 
@@ -94,13 +94,116 @@ impl Stuff {
         }
         damages
     }
+
+    pub fn equip_armor<A: 'static + Armor>(mut self, armor: A) -> Self {
+        self.set_armor(armor);
+        self
+    }
+
+    /// Calculate armor rating.
+    pub fn get_armor_rating(&self) -> ArmorRating {
+        if let Some(armor) = self.armor() {
+            *armor.armor_rating()
+        } else {
+            0.0
+        }
+    }
+
+    pub fn calculate_blocked_damage__armor(&self) -> BlockedDamages {
+        let armor_damages = if let Some(armor) = self.armor() {
+            *armor.armor_rating()
+        } else {
+            0.0
+        };
+        armor_damages
+    }
+
+    fn is_single_weapon(&self) -> bool {
+        if let Some(w) = self.first_weapon() {
+            w.handheld_type() == &HandheldType::SingleHand && self.second_weapon().is_none()
+        } else {
+            false
+        }
+    }
+
+    fn is_double_weapon(&self) -> bool {
+        if let (Some(first_weapon), Some(second_weapon)) =
+            (self.first_weapon(), self.second_weapon())
+        {
+            first_weapon.handheld_type() == &HandheldType::SingleHand
+                && second_weapon.handheld_type() == &HandheldType::SingleHand
+        } else {
+            false
+        }
+    }
+
+    fn is_two_hands_weapon(&self) -> bool {
+        if let (Some(first_weapon), None) = (self.first_weapon(), self.second_weapon()) {
+            first_weapon.handheld_type() == &HandheldType::TwoHands
+        } else {
+            false
+        }
+    }
+
+    fn is_shield_with_single_weapon(&self) -> bool {
+        if let (Some(first_weapon), Some(second_weapon)) =
+            (self.first_weapon(), self.second_weapon())
+        {
+            first_weapon.handheld_type() == &HandheldType::SingleHand
+                && second_weapon.handheld_type() == &HandheldType::OnlyLeft
+        } else {
+            false
+        }
+    }
+    fn is_shield_only(&self) -> bool {
+        if let (None, Some(second_weapon)) = (self.first_weapon(), self.second_weapon()) {
+            second_weapon.handheld_type() == &HandheldType::OnlyLeft
+        } else {
+            false
+        }
+    }
+
+    fn is_one_single_as_secondary(&self) -> bool {
+        if let (None, Some(second_weapon)) = (self.first_weapon(), self.second_weapon()) {
+            second_weapon.handheld_type() == &HandheldType::SingleHand
+        } else {
+            false
+        }
+    }
+
+    pub fn get_weapon_settings(&self) -> StuffConfig {
+        if self.is_double_weapon() {
+            StuffConfig::DualWeapons
+        } else if self.is_shield_only() {
+            StuffConfig::OnlyShied
+        } else if self.is_shield_with_single_weapon() {
+            StuffConfig::ShieldAndWeapon
+        } else if self.is_single_weapon() {
+            StuffConfig::OneSingleHandWeapon
+        } else if self.is_two_hands_weapon() {
+            StuffConfig::TwoHandsWeapon
+        } else if self.is_one_single_as_secondary() {
+            StuffConfig::OneWeaponAsSecondary
+        } else {
+            panic!("Config not found maybe no weapons have been equipped")
+        }
+    }
+}
+
+#[derive(PartialEq)]
+pub enum StuffConfig {
+    DualWeapons,
+    ShieldAndWeapon,
+    TwoHandsWeapon,
+    OnlyShied,
+    OneSingleHandWeapon,
+    OneWeaponAsSecondary,
 }
 
 #[cfg(test)]
 mod test {
-    use crate::item::{HandheldType, Item, RegularWeapon, Shield, Weapon};
-    use crate::stuff::Stuff;
-    use std::rc::Rc;
+    use crate::item::{Armor, BodyArmor, HandheldType, Item, RegularWeapon, Shield, Weapon};
+    use crate::stuff::{Stuff, StuffConfig};
 
     fn get_long_iron_sword() -> RegularWeapon {
         RegularWeapon::new("Long Iron Sword", 25.0, HandheldType::SingleHand)
@@ -118,6 +221,10 @@ mod test {
 
     fn get_steel_shield() -> Shield {
         Shield::new("Steel Shield", 35.0, 7.0)
+    }
+
+    fn get_daedric_mail() -> BodyArmor {
+        BodyArmor::new("Daedric Shield", 45.0)
     }
 
     #[test]
@@ -142,6 +249,7 @@ mod test {
             stuff.second_weapon.as_ref().unwrap().name().to_string(),
             get_long_iron_sword().name()
         );
+        assert!(stuff.get_weapon_settings() == StuffConfig::DualWeapons);
     }
 
     #[test]
@@ -180,6 +288,8 @@ mod test {
             get_long_iron_sword().name()
         );
         assert!(stuff.second_weapon.is_none());
+
+        assert!(stuff.get_weapon_settings() == StuffConfig::OneSingleHandWeapon);
     }
 
     #[test]
@@ -187,7 +297,6 @@ mod test {
         let steel_battle_axe = get_steel_battle_axe();
         let long_iron_sword = get_long_iron_sword();
         let steel_shield = get_steel_shield();
-
         let mut stuff = Stuff::default()
             .equip_weapon(long_iron_sword)
             .equip_weapon(steel_shield);
@@ -200,6 +309,7 @@ mod test {
         );
 
         assert!(stuff.second_weapon.is_none());
+        assert!(stuff.get_weapon_settings() == StuffConfig::TwoHandsWeapon);
     }
 
     #[test]
@@ -228,6 +338,7 @@ mod test {
             stuff.second_weapon.as_ref().unwrap().name().to_string(),
             get_steel_shield().name()
         );
+        assert!(stuff.get_weapon_settings() == StuffConfig::ShieldAndWeapon);
     }
 
     #[test]
@@ -257,5 +368,21 @@ mod test {
             .equip_weapon(get_steel_battle_axe())
             .calculate_damages();
         assert_eq!(&damages, get_steel_battle_axe().damages())
+    }
+
+    #[test]
+    fn test_armor_rating_with_no_armor() {
+        let rating = Stuff::default().get_armor_rating();
+
+        assert_eq!(rating, 0.0)
+    }
+
+    #[test]
+    fn test_armor_rating_with_armor() {
+        let rating = Stuff::default()
+            .equip_armor(get_daedric_mail())
+            .get_armor_rating();
+
+        assert_eq!(&rating, get_daedric_mail().armor_rating());
     }
 }
