@@ -1,22 +1,38 @@
 use crate::item::RegularWeapon;
 use crate::item::Weapon;
 use crate::item::*;
+use crate::stuff::Stuff;
 
-pub struct Character<W> {
+pub struct Character {
     name: String,
     health: f32,
-    armor: Option<BodyArmor>,
-    weapons: EquippedWeapons<W>,
+    stuff: Stuff,
 }
 
-enum EquippedWeapons<W> {
-    TwoHand(W),
-    TwoWeapons { right_hand: W, left_hand: W },
-    OneSingleRightWeapon { right_hand: W },
+impl Character {
+    pub fn name(&self) -> &str {
+        &self.name
+    }
+    pub fn health(&self) -> f32 {
+        self.health
+    }
+    pub fn set_health(&mut self, health: f32) {
+        self.health = health;
+    }
 }
 
-impl<W: Weapon + Item + Default> EquippedWeapons<W> {
-    fn new(first_weapon: W, second_weapons: Option<W>) -> Self {
+enum EquippedWeapons<W1, W2> {
+    TwoHand(W1),
+    TwoWeapons { right_hand: W1, left_hand: W2 },
+    OneSingleRightWeapon { right_hand: W1 },
+}
+
+impl<W1, W2> EquippedWeapons<W1, W2>
+where
+    W1: Default + Weapon + Into<W2>,
+    W2: Default + Weapon,
+{
+    fn new(first_weapon: W1, second_weapons: Option<W2>) -> Self {
         match first_weapon.handheld_type() {
             HandheldType::TwoHands => EquippedWeapons::TwoHand(first_weapon),
             HandheldType::SingleHand => {
@@ -34,53 +50,49 @@ impl<W: Weapon + Item + Default> EquippedWeapons<W> {
 
             HandheldType::OnlyLeft => EquippedWeapons::TwoWeapons {
                 right_hand: Default::default(),
-                left_hand: first_weapon,
+                left_hand: first_weapon.into(),
             },
         }
     }
 
-    pub fn two_hands(weapon: W) -> Self {
+    pub fn two_hands(weapon: W1) -> Self {
         EquippedWeapons::TwoHand(weapon)
     }
 
     /// Take the actual right weapon and move it to left
-    pub fn replace_weapon(actual_weapon: W, new_weapon: W) -> Self {
-        EquippedWeapons::new(new_weapon, Some(actual_weapon))
+    pub fn replace_weapon(actual_weapon: W1, new_weapon: W1) -> Self {
+        EquippedWeapons::new(new_weapon, Some(actual_weapon.into()))
     }
+
     /// Take the actual right weapon and move it to left
-    pub fn add_weapon_to_left_hand(actual_weapon: W, new_weapon: W) -> Self {
-        EquippedWeapons::new(actual_weapon, Some(new_weapon))
+    pub fn add_weapon_to_left_hand(actual_weapon: W1, new_weapon: W1) -> Self {
+        EquippedWeapons::new(actual_weapon, Some(new_weapon.into()))
     }
 }
 
-impl<W> Character<W>
-where
-    W: Weapon + Default + Item,
-{
+impl Character {
     pub fn new(name: &str, health: f32) -> Self {
-        let right_hand = W::default();
-        let left_hand = W::default();
         Character {
             name: name.to_string(),
             health,
-            armor: None,
-            weapons: EquippedWeapons::new(right_hand, Some(left_hand)),
+            stuff: Default::default(),
         }
     }
 
-    pub fn equip_weapon(mut self, weapon: W) -> Self {
-        self.weapons = match self.weapons {
-            EquippedWeapons::TwoHand(_) => EquippedWeapons::two_hands(weapon),
-            EquippedWeapons::TwoWeapons { right_hand, .. } => {
-                EquippedWeapons::replace_weapon(right_hand, weapon)
-            }
-            EquippedWeapons::OneSingleRightWeapon { right_hand } => match weapon.handheld_type() {
-                HandheldType::SingleHand | HandheldType::OnlyLeft => {
-                    EquippedWeapons::add_weapon_to_left_hand(right_hand, weapon)
+    pub fn grab_weapon<W: Weapon + 'static>(mut self, new_weapon: W) -> Self
+    where
+        W: Weapon,
+    {
+        match new_weapon.handheld_type() {
+            HandheldType::SingleHand => {
+                if let Some(first_hand_weapon) = self.stuff.first_weapon() {
+                } else {
                 }
-                HandheldType::TwoHands => EquippedWeapons::two_hands(weapon),
-            },
-        };
+            }
+            HandheldType::OnlyLeft => {}
+            HandheldType::TwoHands => {}
+        }
+
         self
     }
 
