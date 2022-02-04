@@ -1,19 +1,26 @@
-type BlockedDamages = f32;
-type RawDamages = f32;
-type ArmorRating = f32;
+//! Using https://doc.rust-lang.org/book/ch17-02-trait-objects.html
+
+pub type BlockedDamages = f32;
+pub type RawDamages = f32;
+pub type ArmorRating = f32;
+
+//
+pub trait Item {
+    fn name(&self) -> &str;
+    fn set_name(self, name: &str) -> Self
+    where
+        Self: Sized;
+}
 
 // Let's start with armor;
-
-pub trait Armor {
-    fn set_armor_rating(self, armor_rating: ArmorRating) -> Self;
+pub trait Armor: Item {
+    fn set_armor_rating(self, armor_rating: ArmorRating) -> Self
+    where
+        Self: Sized;
     fn armor_rating(&self) -> &ArmorRating;
 }
 
-pub trait Item {
-    fn name(&self) -> &str;
-    fn set_name(self, name: &str) -> Self;
-}
-
+/// NB : We could define many different armor type.
 pub struct BodyArmor {
     armor_rating: f32,
     name: String,
@@ -57,11 +64,13 @@ impl Item for BodyArmor {
     }
 }
 
-pub trait Weapon {
+pub trait Weapon: Item {
     /// Describe how much damage a weapon can deal.
     /// More damage a weapon deals, better quality it is .
     fn damages(&self) -> &RawDamages;
-    fn set_damages(self, amount: RawDamages) -> Self;
+    fn set_damages(self, amount: RawDamages) -> Self
+    where
+        Self: Sized;
     // Block attack and make calculation if possible
     fn can_block_if_possible(&self) -> Option<BlockedDamages> {
         match self.handheld_type() {
@@ -71,10 +80,13 @@ pub trait Weapon {
             HandheldType::OnlyLeft => None,
         }
     }
-    fn set_handheld_type(self, handheld: HandheldType) -> Self;
+    fn set_handheld_type(self, handheld: HandheldType) -> Self
+    where
+        Self: Sized;
     fn handheld_type(&self) -> &HandheldType;
 }
 
+// NB: I could have made multiple trait instead of enum as well.
 #[derive(PartialEq)]
 pub enum HandheldType {
     SingleHand,
@@ -82,6 +94,7 @@ pub enum HandheldType {
     TwoHands,
 }
 
+/// NB : We could define many different of weapon ( like enchanted weapons for example and or melee weapons )
 pub struct RegularWeapon {
     name: String,
     handheld: HandheldType,
@@ -102,7 +115,7 @@ impl Default for RegularWeapon {
         RegularWeapon {
             name: "Hands".to_string(),
             handheld: HandheldType::SingleHand,
-            damages: 0.0,
+            damages: 1.0,
         }
     }
 }
@@ -138,6 +151,7 @@ impl Weapon for RegularWeapon {
     }
 }
 
+/// NB : Shield could be a trait instead of a struct as well.
 pub struct Shield {
     armor_rating: f32,
     name: String,
@@ -204,6 +218,7 @@ impl Weapon for Shield {
         &self.handheld
     }
 }
+
 impl Shield {
     pub fn new(name: &str, armor: f32, bash_damages: f32) -> Self {
         Self::default()
