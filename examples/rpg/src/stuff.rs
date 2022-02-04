@@ -109,7 +109,7 @@ impl Stuff {
         }
     }
 
-    pub fn calculate_blocked_damage__armor(&self) -> BlockedDamages {
+    pub fn calculate_blocked_damage_armor(&self) -> BlockedDamages {
         let armor_damages = if let Some(armor) = self.armor() {
             *armor.armor_rating()
         } else {
@@ -155,6 +155,7 @@ impl Stuff {
             false
         }
     }
+
     fn is_shield_only(&self) -> bool {
         if let (None, Some(second_weapon)) = (self.first_weapon(), self.second_weapon()) {
             second_weapon.handheld_type() == &HandheldType::OnlyLeft
@@ -187,6 +188,14 @@ impl Stuff {
         } else {
             panic!("Config not found maybe no weapons have been equipped")
         }
+    }
+
+    pub fn get_first_weapon_blocking_damage(&self) -> Option<f32> {
+        self.first_weapon.as_ref()?.can_block_if_possible()
+    }
+
+    pub fn get_second_weapon_blocking_damage(&self) -> Option<f32> {
+        self.second_weapon.as_ref()?.can_block_if_possible()
     }
 }
 
