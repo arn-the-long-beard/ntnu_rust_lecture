@@ -76,7 +76,7 @@ pub trait Weapon: Item {
         match self.handheld_type() {
             HandheldType::SingleHand => Some(self.damages() * 0.4),
             HandheldType::TwoHands => Some(self.damages() * 0.7),
-
+            // A bit dummy here because we have different implementation later.
             HandheldType::OnlyLeft => None,
         }
     }
