@@ -2,21 +2,24 @@
 
 ### Summary ##
 
-#### 1 - History & Memory Management
+#### [History](#history)
 
-#### 2 - Rust Intro
+#### [Rust Intro](#rust-intro)
 
-#### 3 - Quirks and features
+#### [features](#features)
 
-#### 4 - Multithreading
+#### [Multithreading](#multithreading)
 
-#### 5 - Popularity and future
+#### [Popularity](#popularity)
 
-#### 6 - Play
+#### [Play](#play)
 
-#### 7 - Conclusion
+#### [Conclusion](#conclusion)
 
-### 1 - History & Memory Management 
+
+
+
+#### History
 
 C is the base
 
@@ -109,7 +112,7 @@ The garbage collector issues with a nice example : [discord](https://discord.com
 
 
 
-### 2 - Rust Intro
+### Rust Intro
 
 - 2006 personal project at Mozilla
   
@@ -129,9 +132,9 @@ Discord, Npm, Delivroo,
 
 
 
-### 3 - Quirks and features
+### Features
 
-#### - Memory safe with :
+#### Memory safe:
 
 -> [Ownership](https://doc.rust-lang.org/nomicon/ownership.html) that allows you to: 
 
@@ -151,7 +154,7 @@ Discord, Npm, Delivroo,
 
 
 
-###### Examples:
+###### Examples
 
 
 **a.** Mutability & Immutability
@@ -262,7 +265,7 @@ fn main (){
 
 ```
 
-###### Conclusion
+###### Resume
 
 Pros :
 - Rules to write and read are easy 
@@ -276,6 +279,9 @@ Cons :
 - You will hate the compiler
 - Get addicted to the safety
 
+![Rust laughing at you](assets/foo.png)
+
+
 
 Is memory safety solved?
 
@@ -284,7 +290,7 @@ Is memory safety solved?
 
 You can do manual [memory management](https://stackoverflow.com/questions/48485454/rust-manual-memory-management) if you want in Unsafe mode
 
-- Traits
+#### Traits
   
 [Inheritance vs trait compositions](https://en.wikipedia.org/wiki/Composition_over_inheritance#)
 
@@ -296,7 +302,7 @@ You can do manual [memory management](https://stackoverflow.com/questions/484854
 
 **d.** Can be understood as `interfaces` in some languages
 
-###### Examples:
+###### Examples
 
 Got the idea to simulate the weapons system from Skyrim and how damages are dealt based on the stuff
 
@@ -536,7 +542,7 @@ pub fn equip_weapon<W: 'static + Weapon>(mut self, weapon: W) -> Self {
 
 
 
-###### 3 - Character
+###### 3 - Fight
 
 ```rust
 
@@ -623,7 +629,7 @@ fn main() {
 ```
 
 
-###### Conclusion :
+###### Resume
 
 Pros: 
 - We can make many object with different types and handle them as long as they have the behavior we need.
@@ -638,20 +644,20 @@ Cons:
 
 
 
-
+![feeling](assets/python_rust.jpg)
 
 - Use it everywhere
 - Async code
 - OMG performances
   https://medium.com/@dexterdarwich/comparison-between-java-go-and-rust-fdb21bd5fb7c
 
-### 4 - Multithreading
+### Multithreading
 
 https://alexyakunin.medium.com/go-vs-c-part-1-goroutines-vs-async-await-ac909c651c11
 
 Need to add example of Rust
 
-### 5 - Popularity and future
+### Popularity
 
 Spotify, Discord, Linux, Aws, Microsoft
 
@@ -662,7 +668,7 @@ https://discord.com/blog/why-discord-is-switching-from-go-to-rust
 Why Linux, Android and Windows are switching to Rust now.
 
 https://fossbytes.com/developers-reveal-why-rust-programming-language-is-losing-popularity/
-### 6 - Play 
+### Play 
 
 https://github.com/danistefanovic/build-your-own-x
 
