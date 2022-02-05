@@ -279,22 +279,22 @@ Cons :
 
 Is memory safety solved?
 
+[Did Java solved it ?](https://stackoverflow.com/questions/218384/what-is-a-nullpointerexception-and-how-do-i-fix-it
+)
+
 You can do manual [memory management](https://stackoverflow.com/questions/48485454/rust-manual-memory-management) if you want in Unsafe mode
-
-
-
 
 - Traits
   
 [Inheritance vs trait compositions](https://en.wikipedia.org/wiki/Composition_over_inheritance#)
 
-a. Nice to have for objects that shared common behavior
+**a.** Nice to have for objects that shared common behavior
 
-b. Nice for libraries and use of Generics and have limitations
+**b.** Nice for libraries and use of Generics and have limitations
 
-c. OP for having many types handled together
+**c.** OP for having many types handled together
 
-d. Can be understood as `interfaces` in some languages
+**d.** Can be understood as `interfaces` in some languages
 
 ###### Examples:
 
