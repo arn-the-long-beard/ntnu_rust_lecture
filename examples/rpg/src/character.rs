@@ -84,14 +84,13 @@ impl Character {
         // We could have armor skills to add to the calculation
         let mut receive_damage = damages - self.get_armor();
 
+        // need to set armor cap like in Skyrim maybe,
+
         if let Some(def_result) = def_dice {
             if def_result > attack_dice {
                 let blocking_damage = self.can_block().unwrap_or(0.0);
                 receive_damage -= blocking_damage;
 
-                if receive_damage < 0.0 {
-                    receive_damage = 0.0;
-                }
                 println!(
                     "{} blocked {} with its weapon",
                     self.name(),
@@ -103,7 +102,11 @@ impl Character {
         } else {
             println!("{} Will not block the attack", self.name);
         }
+        if receive_damage < 0.0 {
+            receive_damage = damages * 0.1;
+        }
         println!("{} received {} damages", self.name, receive_damage);
+
         self.health -= receive_damage;
 
         if self.health < 0.0 {
