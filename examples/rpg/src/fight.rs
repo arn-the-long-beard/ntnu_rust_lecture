@@ -19,9 +19,7 @@ impl Fight {
     pub fn opponents(&self) -> &(Character, Character) {
         &self.opponents
     }
-}
 
-impl Fight {
     pub fn new(first_fighter: Character, second_fighter: Character) -> Self {
         Fight {
             winner_name: None,
@@ -114,6 +112,7 @@ impl Fight {
     }
 
     // Get the names of attacker and defender
+    // So ugly
     pub fn roll_initiative_dice(&self) -> (String, String) {
         if self.opponents.1.roll_dice(SkillDice::Initiative)
             >= self.opponents.0.roll_dice(SkillDice::Initiative)
