@@ -1,5 +1,9 @@
 # Rust Lecture
 
+![C_haters](assets/c_haters.jpeg)
+
+
+
 ### Summary ##
 
 #### [History](#history)
@@ -643,8 +647,11 @@ Cons:
 - Need to use specific new pointer like Rc for advanced stuff
 
 
-
+-> Hard
 ![feeling](assets/python_rust.jpg)
+
+-> But Safe
+![c_rust_meme](assets/c_rust_meme.jpg)
 
 - Use it everywhere
 - Async code
@@ -668,7 +675,21 @@ https://discord.com/blog/why-discord-is-switching-from-go-to-rust
 Why Linux, Android and Windows are switching to Rust now.
 
 https://fossbytes.com/developers-reveal-why-rust-programming-language-is-losing-popularity/
+
 ### Play 
 
 https://github.com/danistefanovic/build-your-own-x
 
+### Conclusion
+
+
+
+
+[Rust Discord to work on the language](https://discord.gg/HGqdyVma)
+
+[Ringrev Discord](https://discord.gg/xNQ9earE)
+
+
+![learning curve with rust](assets/learning_curve_rust.jpg)
+
+![more meme stuff](https://github.com/mattsse/cargo-memex)
