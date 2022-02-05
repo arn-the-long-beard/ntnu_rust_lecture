@@ -19,7 +19,7 @@ pub enum SkillDice {
 impl SkillDice {
     pub fn dices_roll_result(&self, actor: &str) -> u8 {
         let res = match self {
-            SkillDice::Initiative => roll_dice(actor, "1d6", "initiative"),
+            SkillDice::Initiative => roll_dice(actor, "2d6", "initiative"),
             SkillDice::Blocking => roll_dice(actor, "1d6", "blockinge"),
             SkillDice::Attack => roll_dice(actor, "1d10", "attack"),
             SkillDice::Dodge => roll_dice(actor, "1d10", "dodge"),
