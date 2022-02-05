@@ -88,6 +88,10 @@ impl Character {
             if def_result > attack_dice {
                 let blocking_damage = self.can_block().unwrap_or(0.0);
                 receive_damage -= blocking_damage;
+
+                if receive_damage < 0.0 {
+                    receive_damage = 0.0;
+                }
                 println!(
                     "{} blocked {} with its weapon",
                     self.name(),
