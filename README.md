@@ -286,9 +286,355 @@ You can do manual [memory management](https://stackoverflow.com/questions/484854
 
 - Traits
   
+[Inheritance vs trait compositions](https://en.wikipedia.org/wiki/Composition_over_inheritance#)
+
 a. Nice to have for objects that shared common behavior
+
 b. Nice for libraries and use of Generics and have limitations
-d. OP for having many types handled together
+
+c. OP for having many types handled together
+
+d. Can be understood as `interfaces` in some languages
+
+###### Examples:
+
+Got the idea to simulate the weapons system from Skyrim and how damages are dealt based on the stuff
+
+https://en.uesp.net/wiki/Skyrim:Block#Defensive_Blocking
+
+###### 1 - How to define weapons and armor
+
+###### 2 - How to define a character
+
+###### 3 - How to define a *fight*
+
+
+As you will see , I took some freedom from their documentation for the calculation.
+
+NB :
+- Mainly kept the rules for blocking for dual_wielding, two hands weapons, shield + single weapon and one single weapon only.
+
+- Coding with the flow, no much thinking because I had tons of fun
+
+###### 1 - Armor & Weapons
+
+```rust
+
+// Every "object ( weapons or armor is an item with a name )
+
+pub trait Item {
+  fn name(&self) -> &str;
+  fn set_name(self, name: &str) -> Self
+    where
+            Self: Sized;
+}
+
+// We have some Armor
+pub trait Armor: Item {
+  fn set_armor_rating(self, armor_rating: ArmorRating) -> Self
+    where
+            Self: Sized;
+  fn armor_rating(&self) -> &ArmorRating;
+}
+
+pub trait Weapon: Item {
+  /// Describe how much damage a weapon can deal.
+  /// More damage a weapon deals, better quality it is .
+  fn damages(&self) -> &RawDamages;
+  fn set_damages(self, amount: RawDamages) -> Self
+    where
+            Self: Sized;
+  // Block attack and make calculation if possible
+  fn can_block_if_possible(&self) -> Option<BlockedDamages> {
+    match self.handheld_type() {
+      HandheldType::SingleHand => Some(self.damages() * 0.4),
+      HandheldType::TwoHands => Some(self.damages() * 0.7),
+      // A bit dummy here because we have different implementation later.
+      HandheldType::OnlyLeft => None,
+    }
+  }
+  fn set_handheld_type(self, handheld: HandheldType) -> Self
+    where
+            Self: Sized;
+  fn handheld_type(&self) -> &HandheldType;
+}
+
+// Can make alias type for better semantic.
+pub type BlockedDamages = f32;
+pub type RawDamages = f32;
+pub type ArmorRating = f32;
+
+```
+
+
+-> Now we can make some struct that implement this trait.
+
+Here is the shield which is a weapon, but it also have armor properties.
+
+```rust
+
+// ----- Rest of the Code
+
+pub struct Shield {
+    armor_rating: f32,
+    name: String,
+    hold: HandheldType,
+    bash_damage: RawDamages,
+    handheld: HandheldType,
+}
+
+impl Default for Shield {
+    fn default() -> Self {
+        Shield {
+            armor_rating: 0.0,
+            name: "".to_string(),
+            hold: HandheldType::OnlyLeft,
+            bash_damage: 0.0,
+            handheld: HandheldType::OnlyLeft,
+        }
+    }
+}
+
+impl Armor for Shield {
+    fn set_armor_rating(mut self, reduction: f32) -> Self {
+        self.armor_rating = reduction;
+        self
+    }
+
+    fn armor_rating(&self) -> &f32 {
+        &self.armor_rating
+    }
+}
+
+impl Item for Shield {
+    fn name(&self) -> &str {
+        &self.name
+    }
+
+    fn set_name(mut self, name: &str) -> Self {
+        self.name = name.to_string();
+        self
+    }
+}
+
+impl Weapon for Shield {
+    fn damages(&self) -> &RawDamages {
+        &self.bash_damage
+    }
+
+    fn set_damages(mut self, amount: RawDamages) -> Self {
+        self.bash_damage = amount;
+        self
+    }
+
+    fn can_block_if_possible(&self) -> Option<BlockedDamages> {
+        //We could have skills here to help us to calculate
+        Some(self.armor_rating)
+    }
+
+    fn set_handheld_type(mut self, handheld: HandheldType) -> Self {
+        self.handheld = handheld;
+        self
+    }
+
+    fn handheld_type(&self) -> &HandheldType {
+        &self.handheld
+    }
+}
+
+// NB: I could have made multiple trait instead of enum as well.
+#[derive(PartialEq)]
+pub enum HandheldType {
+  SingleHand,
+  OnlyLeft,
+  TwoHands,
+}
+
+impl Shield {
+    pub fn new(name: &str, armor: f32, bash_damages: f32) -> Self {
+        Self::default()
+            .set_name(name)
+            .set_armor_rating(armor)
+            .set_handheld_type(HandheldType::OnlyLeft)
+            .set_damages(bash_damages)
+    }
+}
+
+
+```
+
+
+Check the code for more examples.
+
+Character definition and Stuff definition that qualifies the weapons + armor configuration.
+
+
+###### 2 - Character
+```rust
+
+pub struct Character {
+    name: String,
+    health: f32,
+    max_health: f32,
+    stuff: Stuff,
+}
+
+/// Here we store any kind of weapons and armor.
+/// Stuff contains specific pointers to dynamic object
+/// The compiler will say No to this until you tell him that the object size is know at compile time in the trait definition.
+/// That is why we have the word `Sized` for self in previous trait.
+#[derive(Default)]
+pub struct Stuff {
+    armor: Option<Rc<dyn Armor>>,
+    first_weapon: Option<Rc<dyn Weapon>>,
+    second_weapon: Option<Rc<dyn Weapon>>,  // Rc is a specific reference pointer
+}
+
+impl Stuff {
+  
+// Many other methods  
+/// Will panic if you have equipped a two hand weapon as a second Weapon.
+///  
+pub fn equip_weapon<W: 'static + Weapon>(mut self, weapon: W) -> Self {
+  match weapon.handheld_type() {
+    HandheldType::SingleHand => {
+      if let Some(current_weapon) = self.first_weapon() {
+        if current_weapon.handheld_type() == &HandheldType::SingleHand {
+          self.second_weapon = Some(current_weapon.clone())
+        }
+      }
+      self.set_first_weapon(weapon);
+    }
+    HandheldType::OnlyLeft => {
+      if let Some(current_first_weapon) = self.first_weapon() {
+        if current_first_weapon.handheld_type() == &HandheldType::TwoHands {
+          self.unset_first_weapon();
+        }
+      }
+
+      // See comment on how we could avoid this issue at compile time.
+      // if First weapon is set or not, we do not care, left item always goes left.
+      if let Some(current_second_weapon) = self.second_weapon() {
+        if current_second_weapon.handheld_type() == &HandheldType::TwoHands {
+          panic!("It seems you have a two hand weapon as second weapon");
+        }
+      }
+
+      self.set_second_weapon(weapon)
+    }
+    HandheldType::TwoHands => {
+      self.unset_second_weapon();
+      self.set_first_weapon(weapon);
+    }
+  }
+  self
+}
+
+}
+//
+```
+
+
+
+###### 3 - Character
+
+```rust
+
+
+
+pub struct Fight {
+    winner_name: Option<String>,
+    round: u16,
+    opponents: (Character, Character),
+}
+
+#[allow(unused)]
+impl Fight {
+    pub fn winner_name(&self) -> &Option<String> {
+        &self.winner_name
+    }
+    pub fn round(&self) -> u16 {
+        self.round
+    }
+    pub fn opponents(&self) -> &(Character, Character) {
+        &self.opponents
+    }
+    pub fn new(first_fighter: Character, second_fighter: Character) -> Self {
+      Fight {
+        winner_name: None,
+        round: 0,
+        opponents: (first_fighter, second_fighter),
+      }
+    }
+
+    pub fn start(&mut self) {
+        // My ugly code you can check
+    }
+}
+
+```
+
+
+
+Here is how the "game" looks like.
+
+```rust
+
+mod character;
+mod dice;
+mod fight;
+mod item;
+mod stuff;
+use crate::character::Character;
+use crate::fight::Fight;
+use item::*;
+
+fn main() {
+  println!("Hello and Fight");
+
+  // Lets put some armors.
+  let iron_plate = BodyArmor::new("Iron Plate", 32.0);
+  let steel_plate = BodyArmor::new("Steel Plate", 54.0);
+  let daedric_armor = BodyArmor::new("Daedric Armor", 25.0);
+  let daedric_armor_2 = BodyArmor::new("Daedric Armor 2", 25.0);
+
+  // Lets put some shields
+  let steel_shield = Shield::new("steal Shield", 55.0, 20.0);
+  let iron_shield = Shield::new("Iron Shield", 25.0, 15.0);
+
+  // Lets put some weapons.
+  let iron_long_sword = RegularWeapon::new("Iron Long Sword", 35.0, HandheldType::SingleHand);
+  let steel_battle_axe = RegularWeapon::new("Steel battle Axe", 65.0, HandheldType::TwoHands);
+  let daedric_battle_axe = RegularWeapon::new("Daedric battle Axe", 85.0, HandheldType::TwoHands);
+
+  let grand_ma_skyrim = Character::new("Skyrim Grandma", 300.00)
+          .grab_weapon(steel_battle_axe)
+          .grab_armor(daedric_armor);
+
+  let white_run_guard = Character::new("Olaf the dummy guard", 300.00)
+          .grab_weapon(steel_shield) // <- we can do it because of generic + trait objects for weapon
+          .grab_weapon(iron_long_sword)
+          .grab_armor(daedric_armor_2);
+
+  Fight::new(white_run_guard, grand_ma_skyrim).start();
+}
+
+
+```
+
+
+###### Conclusion :
+
+Pros: 
+- We can make many object with different types and handle them as long as they have the behavior we need.
+- Can make default behavior
+- Flexible and we can store object without specific type as long as their size is safe = we know their size at compile time
+- Everything is always checked by our lovely compiler
+- Can back up stuff with unit-test
+
+Cons:
+- Require some training to understand Generics and trait object 
+- Need to use specific new pointer like Rc for advanced stuff
 
 
 
