@@ -74,8 +74,8 @@ pub trait Weapon: Item {
     // Block attack and make calculation if possible
     fn can_block_if_possible(&self) -> Option<BlockedDamages> {
         match self.handheld_type() {
-            HandheldType::SingleHand => Some(self.damages() * 0.4),
-            HandheldType::TwoHands => Some(self.damages() * 0.7),
+            HandheldType::SingleHand => Some(self.damages() * 0.3),
+            HandheldType::TwoHands => Some(self.damages() * 0.5),
             // A bit dummy here because we have different implementation later.
             HandheldType::OnlyLeft => None,
         }

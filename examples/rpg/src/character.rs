@@ -187,7 +187,7 @@ mod test {
         // Nice as integration test to check the calculate value is correct
         assert_eq!(
             guard.check_blocking_damages().unwrap(),
-            get_steel_battle_axe().damages() * 0.7
+            get_steel_battle_axe().damages() * 0.5
         );
 
         guard = guard.grab_weapon(get_iron_shield());
@@ -213,7 +213,7 @@ mod test {
         // One single hand weapon wo we can block
         assert_eq!(
             guard.check_blocking_damages().unwrap(),
-            get_long_iron_sword().damages() * 0.4
+            get_long_iron_sword().damages() * 0.3
         );
     }
 
