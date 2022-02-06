@@ -8,7 +8,7 @@
 
 #### [Rust Intro](#rust-intro)
 
-#### [features](#features)
+#### [Features](#features)
 
 #### [Popularity](#popularity)
 
@@ -128,6 +128,8 @@ The garbage collector issues with a nice example : [discord](https://discord.com
 - 2006 personal project at Mozilla
   
 - From OCaml to [LLVM](https://llvm.org/) based compiler written in Rust
+
+- [Compile to Native Machine Code](https://stackoverflow.com/questions/43385142/how-is-rust-compiled-to-machine-code/43385776)
 
 - Very first release in 2015  
 
@@ -382,7 +384,7 @@ pub type ArmorRating = f32;
 
 -> Now we can make some struct that implement this trait.
 
-Here is the shield which is a weapon, but it also have armor properties.
+Here is the shield which is a weapon, but it also has armor properties.
 
 ```rust
 
@@ -647,21 +649,91 @@ Pros:
 
 Cons:
 - Require some training to understand Generics and trait object 
-- Need to use specific new pointer like Rc for advanced stuff
+- Need to use specific new pointer like Rc/Arc for advanced stuff
+- The compiler will be painful with you
+
+![Little Britain](assets/little_britain.jpg)
+
+#### Conditional compiling
+
+Well, you can decide what to compile or not :D
 
 
--> Hard
+##### Example
+
+
+- Running tests
+
+```rust
+
+#[cfg(test)]
+mod test {
+    
+    // --- unit test 
+}
+
+
+```
+
+`cargo test`
+
+The command will compile unit test and run them.
+
+
+- Having specific features
+
+```toml
+[features]
+song=[]
+```
+
+Now in your code
+
+```rust
+#[cfg(feature = "song")]
+fn add_song() {
+    println!("Here is the song of the Dovakin")
+}
+```
+
+
+We add the function in main as well :D
+
+```rust
+fn main() {
+    // ------ Rest of the code
+    #[cfg(feature = "song")]
+        add_song();
+}
+```
+
+
+How to run :
+
+
+`cargo run --features song`
+
+###### Resume
+
+Pros:
+- You decide what you want to compile
+- Super useful to reduce the size of your package and use only what you need
+
+Cons:
+- Use strings, so little helping from the IDE ( just a bit still :D)
+
+Good example to use for this is [web_sys](https://docs.rs/web-sys/0.3.56/web_sys/) library as bridge between Rust and the Web
 
 ![feeling](assets/python_rust.jpg)
-
--> But Safe
-
-![c_rust_meme](assets/c_rust_meme.jpg)
 
 
 #### Multithreading
 
+
 [Multiple concurrency models](https://rust-lang.github.io/async-book/01_getting_started/02_why_async.html)
+
+
+##### Example
 
 Let's make 2 fights simultaneously and take the winner for the last one.
 
@@ -697,6 +769,22 @@ Let's make 2 fights simultaneously and take the winner for the last one.
 ```
 
 
+Works like a charm. 
+Of Course if my business logic sucks, then it won't work as expected, but that is not the compiler responsibility.
+But unit-test are there for it :D
+
+###### Resume
+
+Pros:
+- Took me 5 minutes to make it work
+- No runtime wrong, if you do something wrong, the compiler will tell you :D
+- You can make t
+
+Cons:
+- The compiler complained about the Type for Stuff because I needed to add trait bounds to ensure the code was safe ( but the compiler told me again soo :D)
+- Need to think the specific pointer you use such as Rc vs Arc ( but again the compiler helps with that )
+
+![c_rust_meme](assets/c_rust_meme.jpg)
 
 ### Popularity
 

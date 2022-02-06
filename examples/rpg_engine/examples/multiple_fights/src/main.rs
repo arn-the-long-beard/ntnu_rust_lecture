@@ -2,6 +2,11 @@ use rpg_engine::prelude::*;
 use std::sync::mpsc;
 use std::thread;
 
+#[cfg(feature = "song")]
+fn add_song() {
+    println!("Here is the song of the Dovakin.")
+}
+
 fn main() {
     let iron_plate = BodyArmor::new("Iron Plate", 32.0);
     let steel_plate = BodyArmor::new("Steel Plate", 54.0);
@@ -82,5 +87,8 @@ fn main() {
     //second_fight.join().unwrap();
     let final_winner = Fight::new(first_fight_winner, second_fight_winner).resolve();
 
-    println!("The best fighter is : {}", final_winner.name())
+    println!("The best fighter is : {}", final_winner.name());
+
+    #[cfg(feature = "song")]
+    add_song();
 }
