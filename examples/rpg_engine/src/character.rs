@@ -40,7 +40,7 @@ impl Character {
         skill.dices_roll_result(&self.name)
     }
 
-    pub fn grab_weapon<W: Weapon + 'static>(mut self, new_weapon: W) -> Self {
+    pub fn grab_weapon<W: Weapon + Send + Sync + 'static>(mut self, new_weapon: W) -> Self {
         self.stuff = self.stuff.equip_weapon(new_weapon);
         self
     }
@@ -56,7 +56,7 @@ impl Character {
         self
     }
 
-    pub fn grab_armor<A: Armor + 'static>(mut self, armor: A) -> Self {
+    pub fn grab_armor<A: Armor + Send + Sync + 'static>(mut self, armor: A) -> Self {
         self.stuff = self.stuff.equip_armor(armor);
         self
     }

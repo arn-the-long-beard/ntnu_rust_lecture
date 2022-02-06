@@ -1,28 +1,28 @@
 #![allow(unused)]
 
 use crate::item::*;
-use std::rc::Rc;
+use std::sync::Arc;
 
 /// https://stackoverflow.com/questions/49377231/when-to-use-rc-vs-box
-/// Option on Rc is maybe useless, I could use default value for Weapon & Armor as well.
+/// Option on Arc is maybe useless, I could use default value for Weapon & Armor as well.
 #[derive(Default)]
 pub struct Stuff {
-    armor: Option<Rc<dyn Armor>>,
-    first_weapon: Option<Rc<dyn Weapon>>,
-    second_weapon: Option<Rc<dyn Weapon>>,
+    armor: Option<Arc<dyn Armor + Send + Sync>>,
+    first_weapon: Option<Arc<dyn Weapon + Send + Sync>>,
+    second_weapon: Option<Arc<dyn Weapon + Send + Sync>>,
 }
 
 impl Stuff {
-    fn set_armor<A: 'static + Armor>(&mut self, armor: A) {
-        self.armor = Some(Rc::new(armor));
+    fn set_armor<A: 'static + Armor + Send + Sync>(&mut self, armor: A) {
+        self.armor = Some(Arc::new(armor));
     }
 
-    fn set_first_weapon<W: 'static + Weapon>(&mut self, first_weapon: W) {
-        self.first_weapon = Some(Rc::new(first_weapon));
+    fn set_first_weapon<W: 'static + Weapon + Send + Sync>(&mut self, first_weapon: W) {
+        self.first_weapon = Some(Arc::new(first_weapon));
     }
 
-    fn set_second_weapon<W: 'static + Weapon>(&mut self, second_weapon: W) {
-        self.second_weapon = Some(Rc::new(second_weapon))
+    fn set_second_weapon<W: 'static + Weapon + Send + Sync>(&mut self, second_weapon: W) {
+        self.second_weapon = Some(Arc::new(second_weapon))
     }
 
     pub fn unset_first_weapon(&mut self) {
@@ -33,22 +33,22 @@ impl Stuff {
         self.second_weapon = None;
     }
 
-    fn armor(&self) -> &Option<Rc<dyn Armor>> {
+    fn armor(&self) -> &Option<Arc<dyn Armor + Send + Sync>> {
         &self.armor
     }
 
-    fn first_weapon(&self) -> &Option<Rc<dyn Weapon>> {
+    fn first_weapon(&self) -> &Option<Arc<dyn Weapon + Send + Sync>> {
         &self.first_weapon
     }
 
-    fn second_weapon(&self) -> &Option<Rc<dyn Weapon>> {
+    fn second_weapon(&self) -> &Option<Arc<dyn Weapon + Send + Sync>> {
         &self.second_weapon
     }
     /// Will panic if you have equipped a two hand weapon as a second Weapon.
     /// We could have specific trait for weapons to be used with both Hands.
     /// Ex : SingleHand Item could have a trait "BothHand", and restrict this trait for second hand.
     ///
-    pub fn equip_weapon<W: 'static + Weapon>(mut self, weapon: W) -> Self {
+    pub fn equip_weapon<W: 'static + Weapon + Send + Sync>(mut self, weapon: W) -> Self {
         match weapon.handheld_type() {
             HandheldType::SingleHand => {
                 if let Some(current_weapon) = self.first_weapon() {
@@ -97,7 +97,7 @@ impl Stuff {
         damages
     }
 
-    pub fn equip_armor<A: 'static + Armor>(mut self, armor: A) -> Self {
+    pub fn equip_armor<A: 'static + Armor + Send + Sync>(mut self, armor: A) -> Self {
         self.set_armor(armor);
         self
     }
