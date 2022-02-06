@@ -13,6 +13,7 @@ fn main() {
     let iron_shield = Shield::new("Iron Shield", 25.0, 15.0);
 
     // Lets put some weapons.
+    let steel_long_sword = RegularWeapon::new("Steel Long Sword", 40.0, HandheldType::SingleHand);
     let iron_long_sword = RegularWeapon::new("Iron Long Sword", 35.0, HandheldType::SingleHand);
     let steel_battle_axe = RegularWeapon::new("Steel battle Axe", 65.0, HandheldType::TwoHands);
     let daedric_battle_axe = RegularWeapon::new("Daedric battle Axe", 85.0, HandheldType::TwoHands);
@@ -32,14 +33,51 @@ fn main() {
 
     let braith = Character::new("Braith", 100.0).grab_weapon(RegularWeapon::default());
 
-    let first_fight = thread::spawn(move || {
-        Fight::new(white_run_guard, grand_ma_skyrim).start();
+    let dovakin = Character::new("Dovakin", 1500.0)
+        .grab_weapon(steel_long_sword)
+        .grab_weapon(iron_shield);
+
+    let (tx_1, rx_1) = mpsc::channel();
+
+    // This is OS native Thread
+    let _ = thread::spawn(move || {
+        let winner = Fight::new(white_run_guard, grand_ma_skyrim).resolve();
+        tx_1.send(winner)
+            .expect("Should have passed the resolved winner");
     });
 
-    let second_fight = thread::spawn(move || {
-        Fight::new(lydia, braith).start();
+    let (tx_2, rx_2) = mpsc::channel();
+
+    // This is OS native Thread
+    let _ = thread::spawn(move || {
+        let winner = Fight::new(lydia, dovakin).resolve();
+        tx_2.send(winner)
+            .expect("Should have passed the resolved winner");
     });
 
-    first_fight.join().unwrap();
-    second_fight.join().unwrap();
+    let second_fight_winner = rx_2.recv().expect("Should have receive the winner");
+    let first_fight_winner = rx_1.recv().expect("Should have receive the winner");
+
+    println!("----------------- Final Fight ----------------- ");
+    println!(
+        "{} and {} will fight until only one survive",
+        first_fight_winner.name(),
+        second_fight_winner.name()
+    );
+
+    println!(
+        "{} has {} HP",
+        first_fight_winner.name(),
+        first_fight_winner.health()
+    );
+    println!(
+        "{} has {} HP",
+        second_fight_winner.name(),
+        second_fight_winner.health()
+    );
+    println!();
+
+    let final_winner = Fight::new(first_fight_winner, second_fight_winner).resolve();
+
+    println!("The best fighter is : {}", final_winner.name())
 }
