@@ -1,8 +1,6 @@
 # Rust Lecture
 
-![C_haters](assets/c_haters.jpeg)
-
-
+![rust_meme](assets/rust_meme.png)
 
 ### Summary ##
 
@@ -21,6 +19,7 @@
 #### [Conclusion](#conclusion)
 
 
+![C_haters](assets/c_haters.jpeg)
 
 
 #### History
@@ -96,7 +95,7 @@ C++ and [its challenges](https://www.toptal.com/c-plus-plus/top-10-common-c-plus
 
 - Garbage collector vs Manual allocation
   
-- Found this by mistake https://github.com/plasma-umass/memory-landscape
+- Found this https://github.com/plasma-umass/memory-landscape
   
 ![duality](assets/with-great-performance.jpg)
 
@@ -107,6 +106,16 @@ Is the memory management challenge solved ?
 [Not really](https://www.abetterinternet.org/docs/memory-safety/)
 
 [We can ask Microsoft](https://github.com/microsoft/MSRC-Security-Research/blob/master/presentations/2019_02_BlueHatIL/2019_01%20-%20BlueHatIL%20-%20Trends%2C%20challenge%2C%20and%20shifts%20in%20software%20vulnerability%20mitigation.pdf)
+
+[Garbage collection in .Net](https://docs.microsoft.com/en-us/dotnet/standard/garbage-collection/fundamentals)
+
+[jvm_exploit](https://www.sciencedirect.com/science/article/pii/S1742287617300269)
+
+[Did Java solved it ?](https://stackoverflow.com/questions/218384/what-is-a-nullpointerexception-and-how-do-i-fix-it
+)
+
+[bug with GC in Chrome](https://securitylab.github.com/research/garbage-collection-uaf-chrome_gc/)
+
 
 The garbage collector issues with a nice example : [discord](https://discord.com/blog/why-discord-is-switching-from-go-to-rust)
 
@@ -133,7 +142,6 @@ The garbage collector issues with a nice example : [discord](https://discord.com
 - Companies / products using [Rust in production](https://www.rust-lang.org/production/users)
 
 Discord, Npm, Delivroo, 
-
 
 
 ### Features
@@ -286,12 +294,9 @@ Cons :
 ![Rust laughing at you](assets/foo.png)
 
 
-
 Is memory safety solved?
 
-[Did Java solved it ?](https://stackoverflow.com/questions/218384/what-is-a-nullpointerexception-and-how-do-i-fix-it
-)
-
+[There are bugs](https://github.com/Artisan-Lab/Rust-memory-safety-bugs)
 You can do manual [memory management](https://stackoverflow.com/questions/48485454/rust-manual-memory-management) if you want in Unsafe mode
 
 #### Traits
@@ -648,9 +653,11 @@ Cons:
 
 
 -> Hard
+
 ![feeling](assets/python_rust.jpg)
 
 -> But Safe
+
 ![c_rust_meme](assets/c_rust_meme.jpg)
 
 - Use it everywhere
@@ -668,13 +675,22 @@ Need to add example of Rust
 
 Spotify, Discord, Linux, Aws, Microsoft
 
-How does Rust compete with other languages ( could speak about Go vs Rust for Discord )
-
-https://discord.com/blog/why-discord-is-switching-from-go-to-rust
+How does Rust compete with other languages cf [Discord switching from go to RUst](https://discord.com/blog/why-discord-is-switching-from-go-to-rust)
 
 Why Linux, Android and Windows are switching to Rust now.
 
-https://fossbytes.com/developers-reveal-why-rust-programming-language-is-losing-popularity/
+[Google starts using it for Android](https://arstechnica.com/gadgets/2021/04/google-is-now-writing-low-level-android-code-in-rust/)
+
+[Aws](https://aws.amazon.com/blogs/opensource/how-our-aws-rust-team-will-contribute-to-rusts-future-successes/)
+
+[Microsoft and Rust](https://www.zdnet.com/article/programming-languages-rust-for-windows-just-got-another-update/)
+
+[Linux & Rust](https://www.zdnet.com/article/rust-takes-a-major-step-forward-as-linuxs-second-official-language/)
+
+[Rust used for web](https://github.com/MoonZoon/MoonZoon)
+
+[Rust game engine](https://bevyengine.org/)
+
 
 ### Play 
 
@@ -684,8 +700,7 @@ https://github.com/danistefanovic/build-your-own-x
 
 
 
-
-[Rust Discord to work on the language](https://discord.gg/HGqdyVma)
+[Rust Discord](https://discord.gg/HGqdyVma)
 
 [Ringrev Discord](https://discord.gg/xNQ9earE)
 
