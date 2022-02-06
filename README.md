@@ -290,13 +290,15 @@ Cons :
 - You will hate the compiler
 - Get addicted to the safety
 
-![Rust laughing at you](assets/foo.png)
-
 
 Is memory safety solved?
 
 [There are bugs](https://github.com/Artisan-Lab/Rust-memory-safety-bugs)
 You can do manual [memory management](https://stackoverflow.com/questions/48485454/rust-manual-memory-management) if you want in Unsafe mode
+
+![Rust laughing at you](assets/foo.png)
+
+
 
 #### Traits
   
