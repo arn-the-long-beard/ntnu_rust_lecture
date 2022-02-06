@@ -654,7 +654,7 @@ Cons:
 
 ![Little Britain](assets/little_britain.jpg)
 
-#### Conditional compiling
+#### Conditional compilation
 
 Well, you can decide what to compile or not :D
 
