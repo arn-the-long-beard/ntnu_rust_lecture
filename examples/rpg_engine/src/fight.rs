@@ -83,12 +83,14 @@ impl Fight {
             if defender.get_health_status() == HealthStatus::Dead {
                 self.winner_name = Some(attacker.name().to_string());
 
-                println!("{} is dead", defender.name());
+                println!("{} is dead  :((((((((", defender.name());
                 println!(
-                    "{} won the fight and has {} hp left",
+                    "{} won the fight and has {} hp left <3 !!!!!!!!!!!!!!!",
                     attacker.name(),
                     attacker.health()
                 );
+
+                println!(" -------------- Game statistics  -------------- ");
 
                 println!("Fight finished after {} rounds", self.round);
 
