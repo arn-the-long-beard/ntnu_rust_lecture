@@ -10,8 +10,6 @@
 
 #### [features](#features)
 
-#### [Multithreading](#multithreading)
-
 #### [Popularity](#popularity)
 
 #### [Play](#play)
@@ -660,25 +658,50 @@ Cons:
 
 ![c_rust_meme](assets/c_rust_meme.jpg)
 
-- Use it everywhere
-- Async code
-- OMG performances
-  
-[Simple Benchmark](https://medium.com/@dexterdarwich/comparison-between-java-go-and-rust-fdb21bd5fb7c)
 
-[More Complex Benchmark](https://medium.com/star-gazers/benchmarking-low-level-i-o-c-c-rust-golang-java-python-9a0d505f85f7)
+#### Multithreading
 
-### Multithreading
+[Multiple concurrency models](https://rust-lang.github.io/async-book/01_getting_started/02_why_async.html)
 
-https://alexyakunin.medium.com/go-vs-c-part-1-goroutines-vs-async-await-ac909c651c11
+Let's make 2 fights simultaneously and take the winner for the last one.
 
-Need to add example of Rust
+
+```rust
+
+    // ----- Rest of the Code
+
+    let (tx_1, rx_1) = mpsc::channel();
+    // This is OS native Thread
+    let _ = thread::spawn(move || {
+        let winner = Fight::new(white_run_guard, grand_ma_skyrim).resolve();
+        tx_1.send(winner)
+            .expect("Should have passed the resolved winner");
+    });
+
+    let (tx_2, rx_2) = mpsc::channel();
+
+    // This is OS native Thread
+    let _ = thread::spawn(move || {
+        let winner = Fight::new(lydia, dovakin).resolve();
+        tx_2.send(winner)
+            .expect("Should have passed the resolved winner");
+    });
+
+    let second_fight_winner = rx_2.recv().expect("Should have receive the winner");
+    let first_fight_winner = rx_1.recv().expect("Should have receive the winner");
+
+    let final_winner = Fight::new(first_fight_winner, second_fight_winner).resolve();
+
+    println!("The best fighter is : {}", final_winner.name());
+
+```
+
+
 
 ### Popularity
 
-Spotify, Discord, Linux, Aws, Microsoft
 
-How does Rust compete with other languages cf [Discord switching from go to RUst](https://discord.com/blog/why-discord-is-switching-from-go-to-rust)
+ [Discord switching from go to RUst](https://discord.com/blog/why-discord-is-switching-from-go-to-rust)
 
 Why Linux, Android and Windows are switching to Rust now.
 
@@ -694,6 +717,13 @@ Why Linux, Android and Windows are switching to Rust now.
 
 [Rust game engine](https://bevyengine.org/)
 
+OMG performances
+
+[Simple Benchmark](https://medium.com/@dexterdarwich/comparison-between-java-go-and-rust-fdb21bd5fb7c)
+
+[More Complex Benchmark](https://medium.com/star-gazers/benchmarking-low-level-i-o-c-c-rust-golang-java-python-9a0d505f85f7)
+
+
 
 ### Play 
 
@@ -701,6 +731,17 @@ https://github.com/danistefanovic/build-your-own-x
 
 ### Conclusion
 
+- Can be used everywhere
+
+- Great Performance
+
+- Your code is bug free easy
+
+- Concurrency is easy
+
+- Super community
+
+- Made to change the world
 
 
 [Rust Discord](https://discord.gg/HGqdyVma)
