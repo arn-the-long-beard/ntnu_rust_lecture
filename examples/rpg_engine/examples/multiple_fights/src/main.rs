@@ -77,6 +77,9 @@ fn main() {
     );
     println!();
 
+    // Use the stuff bellow to make it work sequential
+    //first_fight.join().unwrap();
+    //second_fight.join().unwrap();
     let final_winner = Fight::new(first_fight_winner, second_fight_winner).resolve();
 
     println!("The best fighter is : {}", final_winner.name())
