@@ -3,6 +3,7 @@ use crate::item::Weapon;
 use crate::item::*;
 use crate::stuff::{Stuff, StuffConfig};
 
+#[derive(Clone)]
 pub struct Character {
     name: String,
     health: f32,
@@ -80,6 +81,7 @@ impl Character {
         self.check_blocking_damages()
     }
 
+    /// Calculate the damages received.
     pub fn get_attacked_by(&mut self, damages: RawDamages, attack_dice: u8, def_dice: Option<u8>) {
         // We could have armor skills to add to the calculation
         let mut receive_damage = damages - self.get_armor();

@@ -5,7 +5,7 @@ use std::sync::Arc;
 
 /// https://stackoverflow.com/questions/49377231/when-to-use-rc-vs-box
 /// Option on Arc is maybe useless, I could use default value for Weapon & Armor as well.
-#[derive(Default)]
+#[derive(Clone, Default)]
 pub struct Stuff {
     armor: Option<Arc<dyn Armor + Send + Sync>>,
     first_weapon: Option<Arc<dyn Weapon + Send + Sync>>,
@@ -44,10 +44,11 @@ impl Stuff {
     fn second_weapon(&self) -> &Option<Arc<dyn Weapon + Send + Sync>> {
         &self.second_weapon
     }
+
     /// Will panic if you have equipped a two hand weapon as a second Weapon.
     /// We could have specific trait for weapons to be used with both Hands.
     /// Ex : SingleHand Item could have a trait "BothHand", and restrict this trait for second hand.
-    ///
+    #[must_use]
     pub fn equip_weapon<W: 'static + Weapon + Send + Sync>(mut self, weapon: W) -> Self {
         match weapon.handheld_type() {
             HandheldType::SingleHand => {
@@ -97,6 +98,7 @@ impl Stuff {
         damages
     }
 
+    #[must_use]
     pub fn equip_armor<A: 'static + Armor + Send + Sync>(mut self, armor: A) -> Self {
         self.set_armor(armor);
         self
