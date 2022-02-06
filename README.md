@@ -4,18 +4,17 @@
 
 ### Summary ##
 
-#### [History](#history)
+- [History](#history)
 
-#### [Rust Intro](#rust-intro)
+- [Rust Intro](#rust-intro)
 
-#### [Features](#features)
+- [Features](#features)
 
-#### [Popularity](#popularity)
+- [Popularity](#popularity)
 
-#### [Play](#play)
+- [Play](#play)
 
-#### [Conclusion](#conclusion)
-
+- [Conclusion](#conclusion)
 
 ![C_haters](assets/c_haters.jpeg)
 
