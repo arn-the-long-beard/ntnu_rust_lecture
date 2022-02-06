@@ -840,4 +840,4 @@ https://github.com/danistefanovic/build-your-own-x
 
 ![learning curve with rust](assets/learning_curve_rust.jpg)
 
-![more meme stuff](https://github.com/mattsse/cargo-memex)
+![More meme stuff](https://github.com/mattsse/cargo-memex)
