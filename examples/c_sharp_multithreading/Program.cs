@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Threading.Channels;
 using Channel = System.Threading.Channels.Channel;
+//https://alexyakunin.medium.com/go-vs-c-part-1-goroutines-vs-async-await-ac909c651c11
 
 namespace ChannelsTest
 {
