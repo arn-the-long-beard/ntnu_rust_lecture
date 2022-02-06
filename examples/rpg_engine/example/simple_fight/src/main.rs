@@ -1,11 +1,4 @@
-mod character;
-mod dice;
-mod fight;
-mod item;
-mod stuff;
-use crate::character::Character;
-use crate::fight::Fight;
-use item::*;
+use rpg_engine::prelude::*;
 
 #[allow(unused)]
 fn main() {

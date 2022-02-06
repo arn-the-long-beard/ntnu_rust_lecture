@@ -663,7 +663,10 @@ Cons:
 - Use it everywhere
 - Async code
 - OMG performances
-  https://medium.com/@dexterdarwich/comparison-between-java-go-and-rust-fdb21bd5fb7c
+  
+[Simple Benchmark](https://medium.com/@dexterdarwich/comparison-between-java-go-and-rust-fdb21bd5fb7c)
+
+[More Complex Benchmark](https://medium.com/star-gazers/benchmarking-low-level-i-o-c-c-rust-golang-java-python-9a0d505f85f7)
 
 ### Multithreading
 
