@@ -778,7 +778,7 @@ Pros:
 - You can make it simple and easy to understand
 
 Cons:
-- The compiler complained about the Type for Stuff because I needed to add trait bounds to ensure the code was safe ( but the compiler told me again soo :D)
+- The compiler complained about the Type for Stuff because I needed to add trait bounds to ensure the code was safe ( but the compiler told me again soo 😀)
 - Need to think the specific pointer you use such as Rc vs Arc ( but again the compiler helps with that )
 
 ![c_rust_meme](assets/c_rust_meme.jpg)
