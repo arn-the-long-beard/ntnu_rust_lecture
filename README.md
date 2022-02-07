@@ -16,12 +16,14 @@
 
 - [Conclusion](#conclusion)
 
-![C_haters](assets/c_haters.jpeg)
-
+---
 
 ## History
 
-C is the base
+C is ancient.
+
+![C_haters](assets/c_haters.jpeg)
+
 
 https://www.youtube.com/embed/Fm5Ust7vEhk
 
@@ -122,7 +124,7 @@ Garbage collector limitation : [discord](https://discord.com/blog/why-discord-is
 
 ![Languages in meme](assets/meme_languages.png)
 
-
+---
 
 ## Rust Intro
 
@@ -144,6 +146,7 @@ Garbage collector limitation : [discord](https://discord.com/blog/why-discord-is
 
 Discord, Npm, Delivroo, 
 
+---
 
 ## Features
 
@@ -779,6 +782,8 @@ Cons:
 
 ![c_rust_meme](assets/c_rust_meme.jpg)
 
+---
+
 ## Popularity
 
 
@@ -805,11 +810,12 @@ OMG performances
 [More Complex Benchmark](https://medium.com/star-gazers/benchmarking-low-level-i-o-c-c-rust-golang-java-python-9a0d505f85f7)
 
 
-
+---
 ## Play 
 
 [Explore opportunities](https://github.com/danistefanovic/build-your-own-x)
 
+---
 ## Conclusion
 
 - Can be used everywhere
