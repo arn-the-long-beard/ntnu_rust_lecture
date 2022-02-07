@@ -831,6 +831,8 @@ OMG performances
 
 - Made to change the world
 
+- Can solve most of modern tech challenges
+
 
 [Rust Discord](https://discord.gg/HGqdyVma)
 
