@@ -119,19 +119,19 @@ fn main() {
     println!("----------------- Final Fight ----------------- ");
     println!(
         "{} and {} will fight until only one survive",
-        first_fight_winner.name(),
-        second_fight_winner.name()
+        first_fight_winner.name().bold(),
+        second_fight_winner.name().bold(),
     );
 
     println!(
         "{} has {} HP",
-        first_fight_winner.name(),
-        first_fight_winner.health()
+        first_fight_winner.name().bold(),
+        first_fight_winner.health().to_string().green().bold(),
     );
     println!(
         "{} has {} HP",
-        second_fight_winner.name(),
-        second_fight_winner.health()
+        second_fight_winner.name().bold(),
+        second_fight_winner.health().to_string().green().bold(),
     );
     println!();
 
@@ -140,7 +140,10 @@ fn main() {
     //second_fight.join().unwrap();
     let final_winner = Fight::new(first_fight_winner, second_fight_winner).resolve();
 
-    println!("The best fighter is : {}", final_winner.name());
+    println!(
+        "The best fighter is : {}",
+        final_winner.name().yellow().bold()
+    );
 
     #[cfg(feature = "song")]
     add_song();
