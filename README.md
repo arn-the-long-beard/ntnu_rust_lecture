@@ -335,9 +335,7 @@ NB :
 ###### 1 - Armor & Weapons
 
 ```rust
-
 // Every "object ( weapons or armor is an item with a name )
-
 pub trait Item {
   fn name(&self) -> &str;
   fn set_name(self, name: &str) -> Self
@@ -379,7 +377,6 @@ pub trait Weapon: Item {
 pub type BlockedDamages = f32;
 pub type RawDamages = f32;
 pub type ArmorRating = f32;
-
 ```
 
 
@@ -388,9 +385,7 @@ pub type ArmorRating = f32;
 Here is the shield which is a weapon, but it also has armor properties.
 
 ```rust
-
 // ----- Rest of the Code
-
 pub struct Shield {
     armor_rating: f32,
     name: String,
@@ -475,8 +470,6 @@ impl Shield {
             .set_damages(bash_damages)
     }
 }
-
-
 ```
 
 
@@ -487,7 +480,6 @@ Character definition and Stuff definition that qualifies the weapons + armor con
 
 ###### 2 - Character
 ```rust
-
 pub struct Character {
     name: String,
     health: f32,
@@ -513,6 +505,7 @@ impl Stuff {
 ///  
 pub fn equip_weapon<W: 'static + Weapon>(mut self, weapon: W) -> Self {
   match weapon.handheld_type() {
+      
     HandheldType::SingleHand => {
       if let Some(current_weapon) = self.first_weapon() {
         if current_weapon.handheld_type() == &HandheldType::SingleHand {
@@ -521,6 +514,7 @@ pub fn equip_weapon<W: 'static + Weapon>(mut self, weapon: W) -> Self {
       }
       self.set_first_weapon(weapon);
     }
+      
     HandheldType::OnlyLeft => {
       if let Some(current_first_weapon) = self.first_weapon() {
         if current_first_weapon.handheld_type() == &HandheldType::TwoHands {
@@ -547,7 +541,6 @@ pub fn equip_weapon<W: 'static + Weapon>(mut self, weapon: W) -> Self {
 }
 
 }
-//
 ```
 
 
@@ -555,9 +548,6 @@ pub fn equip_weapon<W: 'static + Weapon>(mut self, weapon: W) -> Self {
 ###### 3 - Fight
 
 ```rust
-
-
-
 pub struct Fight {
     winner_name: Option<String>,
     round: u16,
@@ -666,13 +656,11 @@ Well, you can decide what to compile or not :D
 - Running tests
 
 ```rust
-
 #[cfg(test)]
 mod test {
     
     // --- unit test 
 }
-
 
 ```
 
