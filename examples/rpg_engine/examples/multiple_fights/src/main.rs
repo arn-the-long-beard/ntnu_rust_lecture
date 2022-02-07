@@ -1,10 +1,63 @@
+use colored::*;
 use rpg_engine::prelude::*;
 use std::sync::mpsc;
 use std::thread;
+use std::time::Duration;
 
 #[cfg(feature = "song")]
 fn add_song() {
-    println!("Here is the song of the Dovakin.")
+    println!(
+        "Dovahkiin, Dovahkiin, naal ok zin los vahriin,
+    Wah dein vokul mahfaeraak ahst vaal!
+    Ahr fin norok paal graan fod nust hon zindro zaan,
+    Dovahkiin fah hin kogaan mu draal!"
+    );
+    thread::sleep(Duration::new(2, 0));
+    println!(
+        "
+    Huzrah nu, kul do od, wah aan bok lingrah vod,
+    Ahrk fin tey, boziik fun, do fin gein!
+    Wo lost fron wah ney dov, ahrk fin reyliik do jul,
+    Voth aan suleyk wah ronit faal krein!"
+    );
+    thread::sleep(Duration::new(2, 0));
+    println!(
+        "    Ahrk fin zul, rok drey kod, nau tol morokei frod,
+    Rul lot Taazokaan motaad voth kein!
+    Sahrot Thu'um, med aan tuz, bey zeim hokoron pah,
+    Ol fin Dovahkiin Komeyt ok rein!
+"
+    );
+    thread::sleep(Duration::new(2, 0));
+    println!(
+        "  Dovahkiin, Dovahkiin, naal ok zin los vahriin,
+    Wah dein vokul mahfaeraak ahst vaal!
+    Ahr fin norok paal graan fod nust hon zindro zaan,
+    Dovahkiin fah hin kogaan mu draal!
+"
+    );
+    thread::sleep(Duration::new(2, 0));
+    println!(
+        "  Ark fin Kel lost prodah, do ved viing ko fin krah,
+    Tol fod zeymah win kein meyz fundein!
+    Alduin, feyn do jun, kruziik vokun staadnau,
+    Voth aan bahlok wah diivon fin lein!"
+    );
+    thread::sleep(Duration::new(2, 0));
+    println!(
+        "   Nuz aan sul, fent alok, fod fin vul dovah nok,
+    Fen kos nahlot mahfaeraak ahrk ruz!
+    Paaz Keizaal fen kos stin nol bein Alduin jot,
+    Dovahkiin kos fin saviik do muz!
+"
+    );
+    thread::sleep(Duration::new(2, 0));
+    println!(
+        "    Dovahkiin, Dovahkiin, naal ok zin los vahriin,
+    Wah dein vokul mahfaeraak ahst vaal!
+    Ahr fin norok paal graan fod nust hon zindro zaan,
+    Dovahkiin fah hin kogaan mu draal!"
+    );
 }
 
 fn main() {
