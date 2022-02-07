@@ -2,7 +2,7 @@
 
 ![rust_meme](assets/rust_meme.png)
 
-### Summary ##
+## Summary ##
 
 - [History](#history)
 
@@ -19,7 +19,7 @@
 ![C_haters](assets/c_haters.jpeg)
 
 
-#### History
+## History
 
 C is the base
 
@@ -122,7 +122,7 @@ The garbage collector issues with a nice example : [discord](https://discord.com
 
 
 
-### Rust Intro
+## Rust Intro
 
 - 2006 Graydon Hoare personal project at Mozilla
   
@@ -143,9 +143,9 @@ The garbage collector issues with a nice example : [discord](https://discord.com
 Discord, Npm, Delivroo, 
 
 
-### Features
+## Features
 
-#### Memory safe:
+### Memory safe
 
 -> [Ownership](https://doc.rust-lang.org/nomicon/ownership.html) that allows you to: 
 
@@ -165,7 +165,7 @@ Discord, Npm, Delivroo,
 
 
 
-###### Examples
+#### Examples
 
 
 **a.** Mutability & Immutability
@@ -276,7 +276,7 @@ fn main (){
 
 ```
 
-###### Resume
+#### Resume
 
 Pros :
 - Rules to write and read are easy 
@@ -300,7 +300,7 @@ You can do manual [memory management](https://stackoverflow.com/questions/484854
 
 
 
-#### Traits
+### Traits
   
 [Inheritance vs trait compositions](https://en.wikipedia.org/wiki/Composition_over_inheritance#)
 
@@ -312,17 +312,17 @@ You can do manual [memory management](https://stackoverflow.com/questions/484854
 
 **d.** Can be understood as `interfaces` in some languages
 
-###### Examples
+##### Examples
 
 Got the idea to simulate the weapons system from Skyrim and how damages are dealt based on the stuff
 
 https://en.uesp.net/wiki/Skyrim:Block#Defensive_Blocking
 
-###### 1 - How to define weapons and armor
+####### 1 - How to define weapons and armor
 
-###### 2 - How to define a character
+####### 2 - How to define a character
 
-###### 3 - How to define a *fight*
+####### 3 - How to define a *fight*
 
 
 As you will see , I took some freedom from their documentation for the calculation.
@@ -629,7 +629,7 @@ fn main() {
 ```
 
 
-###### Resume
+##### Resume
 
 Pros: 
 - We can make many object with different types and handle them as long as they have the behavior we need.
@@ -645,7 +645,7 @@ Cons:
 
 ![Little Britain](assets/little_britain.jpg)
 
-#### Conditional compilation
+### Conditional compilation
 
 Well, you can decide what to compile or not :D
 
@@ -704,7 +704,7 @@ How to run :
 
 `cargo run --features song`
 
-###### Resume
+##### Resume
 
 Pros:
 - You decide what you want to compile
@@ -718,7 +718,7 @@ Good example to use for this is [web_sys](https://docs.rs/web-sys/0.3.56/web_sys
 ![feeling](assets/python_rust.jpg)
 
 
-#### Multithreading
+### Multithreading
 
 
 [Multiple concurrency models](https://rust-lang.github.io/async-book/01_getting_started/02_why_async.html)
@@ -764,7 +764,7 @@ Works like a charm.
 Of Course if my business logic sucks, then it won't work as expected, but that is not the compiler responsibility.
 But unit-test are there for it :D
 
-###### Resume
+##### Resume
 
 Pros:
 - Took me 5 minutes to make it work
@@ -777,7 +777,7 @@ Cons:
 
 ![c_rust_meme](assets/c_rust_meme.jpg)
 
-### Popularity
+## Popularity
 
 
  [Discord switching from go to RUst](https://discord.com/blog/why-discord-is-switching-from-go-to-rust)
@@ -804,11 +804,11 @@ OMG performances
 
 
 
-### Play 
+## Play 
 
-https://github.com/danistefanovic/build-your-own-x
+[Explore opportunities](https://github.com/danistefanovic/build-your-own-x)
 
-### Conclusion
+## Conclusion
 
 - Can be used everywhere
 
