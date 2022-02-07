@@ -80,6 +80,7 @@ impl Turn {
         }
     }
 
+    /// Should use string template make unit test.
     /// Displays specific message for a particular step during the turn.
     fn display_results(&self, turn_step: TurnStep) {
         let attacker_name = &self.attacker.name();
@@ -125,11 +126,11 @@ impl Turn {
                 if succeed {
                     println!(
                         "{} {} {} {} damages from {}",
-                        attacker_name.bold(),
+                        defender_name.bold(),
                         "succeed".green(),
                         "to block".underline(),
                         blocked_damage.to_string().red(),
-                        defender_name.bold()
+                        attacker_name.bold()
                     );
                 } else {
                     println!(
