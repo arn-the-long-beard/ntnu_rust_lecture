@@ -1,6 +1,8 @@
 use crate::character::{Character, HealthStatus};
 use crate::dice::SkillDice;
-use crate::item::RawDamages;
+use crate::item::{BlockedDamages, RawDamages};
+use colored::*;
+
 use std::collections::HashMap;
 
 pub struct Fight {
@@ -38,7 +40,7 @@ impl Fight {
         }
     }
 
-    fn update_counting_attack(&mut self, attack_name: &str) {
+    fn update_counting_succesfull_attacks(&mut self, attack_name: &str) {
         if let Some(number_attacks) = self.attack_counting.get_mut(attack_name) {
             *number_attacks += 1;
         }
@@ -154,13 +156,74 @@ impl Fight {
         while self.winner_name.is_none() {
             self.round += 1;
 
+            println!(
+                "{}{} starts",
+                "turn ".underline(),
+                self.round.to_string().underline()
+            );
             let (attacker, defender) = self.resolve_initiative();
+
+            println!(
+                "{} will attack and {} will defend",
+                &attacker.name().bold(),
+                &defender.name().bold()
+            );
 
             let mut turn = Turn::new(self.round, attacker, defender);
 
             if let Some((attack, damage)) = turn.resolve_attack_defense() {
-                self.update_counting_attack(turn.attacker.name());
-                turn.resolve_blocking(attack, damage);
+                self.update_counting_succesfull_attacks(turn.attacker.name());
+
+                println!(
+                    "{} {} {} {} attack",
+                    turn.defender.name().bold(),
+                    "failed".red(),
+                    "to dodge".underline(),
+                    turn.attacker.name().bold(),
+                );
+                let mut hit_damage = damage;
+                if let Some(blocked_damage) = turn.defender.can_block() {
+                    println!(
+                        "{} tries to block {}",
+                        turn.defender.name().bold(),
+                        turn.attacker.name().bold()
+                    );
+
+                    if let Some(blocked_damage) = turn.resolve_blocking(attack, blocked_damage) {
+                        hit_damage -= blocked_damage;
+
+                        println!(
+                            "{} {} {} {} from {}",
+                            turn.defender.name().bold(),
+                            "succeed".green(),
+                            "to block".underline(),
+                            blocked_damage.to_string().red(),
+                            turn.attacker.name().bold()
+                        );
+
+                        if hit_damage < 0.0 {
+                            hit_damage = 0.0;
+                        }
+                    } else {
+                        println!(
+                            "{} {} to block {} from {}",
+                            turn.defender.name().bold(),
+                            "failed".red(),
+                            blocked_damage.to_string().red(),
+                            turn.attacker.name().bold()
+                        );
+                    }
+
+                    let result = turn.defender.gets_hit(hit_damage);
+
+                    println!(
+                        "{} deals {} {} to {}",
+                        turn.attacker.name().bold(),
+                        result.to_string().red(),
+                        "damages".red(),
+                        turn.defender.name().bold()
+                    );
+                }
 
                 if let Some((winner, loser)) = turn.resolve_winner_and_loser() {
                     self.winner_name = Some(winner.name().to_string());
@@ -169,6 +232,13 @@ impl Fight {
 
                     self.show_statistics()
                 }
+            } else {
+                println!(
+                    "{} dodged {} attack {}",
+                    turn.defender.name().bold(),
+                    turn.attacker.name().bold(),
+                    "successfully".green()
+                );
             }
             // We cloned them in the first place so we need to have then.
             self.update_opponents(turn.attacker, turn.defender);
@@ -241,31 +311,27 @@ impl Turn {
         let dodge = self.defender.roll_dice(SkillDice::Dodge);
 
         if dodge > attack {
-            println!(
-                "{} dodged {} attacks successfully",
-                self.defender.name(),
-                self.attacker.name()
-            );
             None
         } else {
             Some((attack, self.attacker.deal_damages()))
         }
     }
 
-    fn resolve_blocking(&mut self, attack: u8, damage: RawDamages) {
-        let def = self
-            .defender
-            .can_block()
-            .map(|_| self.defender.roll_dice(SkillDice::Blocking));
-
-        if def.is_some() {
-            println!(
-                "{} tries to block {}",
-                self.defender.name(),
-                self.attacker.name()
-            );
+    /// Roll dice and display message if blocking can happen.
+    ///
+    /// Here it is obvious the bad design of my code because we roll the dice before messages.
+    /// We get reuse some of the functions later and it does make useless redundancy.
+    fn resolve_blocking(
+        &mut self,
+        attack: u8,
+        blocked_damage: BlockedDamages,
+    ) -> Option<BlockedDamages> {
+        let blocking = self.defender.roll_dice(SkillDice::Blocking);
+        if blocking >= attack {
+            Some(blocked_damage)
+        } else {
+            None
         }
-        self.defender.get_attacked_by(damage, attack, def);
     }
 
     fn resolve_winner_and_loser(&self) -> Option<(Character, Character)> {

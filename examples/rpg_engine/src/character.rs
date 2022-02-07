@@ -2,6 +2,7 @@ use crate::dice::SkillDice;
 use crate::item::Weapon;
 use crate::item::*;
 use crate::stuff::{Stuff, StuffConfig};
+use colored::*;
 
 #[derive(Clone)]
 pub struct Character {
@@ -41,22 +42,25 @@ impl Character {
         skill.dices_roll_result(&self.name)
     }
 
+    #[must_use]
     pub fn grab_weapon<W: Weapon + Send + Sync + 'static>(mut self, new_weapon: W) -> Self {
         self.stuff = self.stuff.equip_weapon(new_weapon);
         self
     }
 
+    #[must_use]
     pub fn drop_first_weapon(mut self) -> Self {
         self.stuff.unset_first_weapon();
         self
     }
 
+    #[must_use]
     pub fn drop_second_weapon(mut self) -> Self {
         self.stuff.unset_second_weapon();
-
         self
     }
 
+    #[must_use]
     pub fn grab_armor<A: Armor + Send + Sync + 'static>(mut self, armor: A) -> Self {
         self.stuff = self.stuff.equip_armor(armor);
         self
@@ -81,7 +85,28 @@ impl Character {
         self.check_blocking_damages()
     }
 
+    /// Calculate direct hit damages and give back the result.
+    /// Does update the character Health as well.
+    pub fn gets_hit(&mut self, raw_damages: RawDamages) -> RawDamages {
+        let mut damage_taken = raw_damages - self.get_armor();
+        if damage_taken < 0.0 {
+            damage_taken = raw_damages * 0.1;
+        }
+
+        self.update_health_from_taken_damage(&damage_taken);
+        damage_taken
+    }
+
+    fn update_health_from_taken_damage(&mut self, damages: &RawDamages) {
+        self.health -= *damages;
+        if self.health < 0.0 {
+            self.health = 0.0
+        }
+    }
+
     /// Calculate the damages received.
+    /// SO Ugly code.
+    #[deprecated]
     pub fn get_attacked_by(&mut self, damages: RawDamages, attack_dice: u8, def_dice: Option<u8>) {
         // We could have armor skills to add to the calculation
         let mut receive_damage = damages - self.get_armor();
@@ -94,20 +119,30 @@ impl Character {
                 receive_damage -= blocking_damage;
 
                 println!(
-                    "{} blocked {} with its weapon",
-                    self.name(),
-                    blocking_damage
+                    "{} {} {} with its weapon",
+                    self.name().bold(),
+                    "blocked".blue(),
+                    blocking_damage.to_string().red()
                 )
             } else {
-                println!("{} failed blocking the attack ", self.name());
+                println!(
+                    "{} {} {} the attack ",
+                    self.name().bold(),
+                    "failed".red(),
+                    "blocking".underline()
+                );
             }
         } else {
-            println!("{} Will not block the attack", self.name);
+            println!("{} Will not block the attack", self.name.bold());
         }
         if receive_damage < 0.0 {
             receive_damage = damages * 0.1;
         }
-        println!("{} received {} damages", self.name, receive_damage);
+        println!(
+            "{} received {} damages",
+            self.name.bold(),
+            receive_damage.to_string().red().bold()
+        );
 
         self.health -= receive_damage;
 
