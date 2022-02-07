@@ -309,13 +309,11 @@ You can do manual [memory management](https://stackoverflow.com/questions/484854
   
 [Inheritance vs trait compositions](https://en.wikipedia.org/wiki/Composition_over_inheritance#)
 
-**a.** Nice to have for objects that shared common behavior
+- Useful to have for objects that share specific behaviors
 
-**b.** Nice for libraries and use of Generics and have limitations
+- Flexible and allow having many types handled together
 
-**c.** OP for having many types handled together
-
-**d.** Can be understood as `interfaces` in some languages
+- Can be understood as `interfaces` in some other languages
 
 ##### Examples
 
@@ -639,7 +637,7 @@ fn main() {
 Pros: 
 - We can make many object with different types and handle them as long as they have the behavior we need.
 - Can make default behavior
-- Flexible and we can store object without specific type as long as their size is safe = we know their size at compile time
+- We can store objects without specific type as long as their size is safe = we know their size at compile time
 - Everything is always checked by our lovely compiler
 - Can back up stuff with unit-test
 
