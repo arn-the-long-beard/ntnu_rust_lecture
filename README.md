@@ -158,7 +158,7 @@ Discord, Npm, Delivroo,
 
 
 
-**b.** `Borrow` an object so you can `Read` some of its value to use later with`&`
+**b.** `Borrow` an object so you can `Read` its value with`&`
 
 
 
