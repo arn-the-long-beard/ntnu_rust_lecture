@@ -37,8 +37,14 @@ return 0;
 ```
 
 - What is memory management
+  
+- [Heap and Stack](https://stackoverflow.com/questions/24891/c-memory-management/24922)
 
 C & C++ use manual memory management
+
+- C++ talk from his creator: https://www.youtube.com/watch?v=JBjjnqG0BP8
+
+[Example of memory management](https://www.programiz.com/cpp-programming/memory-management)
 
 ```c++
 
@@ -76,13 +82,7 @@ int main() {
 
 
 ```
-- What will happens if you forget to delete.
-
-https://stackoverflow.com/questions/14987318/what-happens-if-i-dont-delete
-  
-- [Heap and Stack](https://stackoverflow.com/questions/24891/c-memory-management/24922)
-
-- C++ came in the game : https://www.youtube.com/watch?v=JBjjnqG0BP8
+- [What will happens if you forget to delete](https://stackoverflow.com/questions/14987318/what-happens-if-i-dont-delete)
 
 C++ and [its challenges](https://www.toptal.com/c-plus-plus/top-10-common-c-plus-plus-developer-mistakes) 
 
