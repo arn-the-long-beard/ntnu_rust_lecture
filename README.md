@@ -1,6 +1,6 @@
 # Rust Lecture
 
-![rust_meme](assets/rust_meme.png)
+![rust_meme](assets/crabby.png)
 
 ## Summary ##
 
