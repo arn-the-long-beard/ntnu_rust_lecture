@@ -683,6 +683,8 @@ The command will compile unit test and run them.
 
 - Having specific features
 
+In cargo.toml
+
 ```toml
 [features]
 song=[]
