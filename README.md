@@ -774,8 +774,8 @@ But unit-test are there for it 😁
 
 Pros:
 - Took me 5 minutes to make it work
-- No runtime wrong, if you do something wrong, the compiler will tell you 😁
-- You can make t
+- No runtime bugs, if you do something wrong, the compiler will tell you 😁
+- You can make it simple and easy to understand
 
 Cons:
 - The compiler complained about the Type for Stuff because I needed to add trait bounds to ensure the code was safe ( but the compiler told me again soo :D)
