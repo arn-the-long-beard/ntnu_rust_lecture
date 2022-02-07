@@ -102,6 +102,8 @@ Is the memory management challenge solved ?
 
 [Not really](https://www.abetterinternet.org/docs/memory-safety/)
 
+If it was solved with GC, why still so much use of C & C++ now.
+
 [We can ask Microsoft](https://github.com/microsoft/MSRC-Security-Research/blob/master/presentations/2019_02_BlueHatIL/2019_01%20-%20BlueHatIL%20-%20Trends%2C%20challenge%2C%20and%20shifts%20in%20software%20vulnerability%20mitigation.pdf)
 
 [Garbage collection in .Net](https://docs.microsoft.com/en-us/dotnet/standard/garbage-collection/fundamentals)
@@ -111,10 +113,10 @@ Is the memory management challenge solved ?
 [Did Java solved it ?](https://stackoverflow.com/questions/218384/what-is-a-nullpointerexception-and-how-do-i-fix-it
 )
 
-[bug with GC in Chrome](https://securitylab.github.com/research/garbage-collection-uaf-chrome_gc/)
+[Bug with GC in Chrome](https://securitylab.github.com/research/garbage-collection-uaf-chrome_gc/)
 
 
-The garbage collector issues with a nice example : [discord](https://discord.com/blog/why-discord-is-switching-from-go-to-rust)
+Garbage collector limitation : [discord](https://discord.com/blog/why-discord-is-switching-from-go-to-rust)
 
 - Then a new challenger arrived, with releases in 2015, 2018 and 2021.
 
