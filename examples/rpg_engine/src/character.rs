@@ -92,7 +92,6 @@ impl Character {
         if damage_taken < 0.0 {
             damage_taken = raw_damages * 0.1;
         }
-
         self.update_health_from_taken_damage(&damage_taken);
         damage_taken
     }
