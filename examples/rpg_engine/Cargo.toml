@@ -7,3 +7,4 @@ edition = "2021"
 
 [dependencies]
 caith = "4.2.2"
+colored = "2.0.0"

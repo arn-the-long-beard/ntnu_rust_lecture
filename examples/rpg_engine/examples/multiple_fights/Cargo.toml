@@ -7,7 +7,7 @@ edition = "2021"
 
 [dependencies]
 rpg_engine= { path = "../.."}
-
+colored = "2.0.0"
 
 [features]
 song=[]
