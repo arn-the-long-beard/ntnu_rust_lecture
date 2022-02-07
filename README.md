@@ -162,10 +162,10 @@ Discord, Npm, Delivroo,
 
 
 
-**c.** `Own` an object in an scope that manages its memory automatically , just pass it as assignment et or function
+**c.** `Own` an object in an scope and manages its memory automatically, just pass it as assignment or function
 
 
-**d.** Makes the compiler `checks` everything for you, it will be your best enemy first and then your best friend later :D
+**d.** Makes the compiler `checks` everything for you, it will be your best enemy first and then your best friend later 😁
 
 
 
@@ -252,7 +252,7 @@ fn main() {
 
 **d.** Compiler check for everything for you
 
-Little surprise with mutable references :D
+Little surprise with mutable references 😁
 
 ```rust
 
@@ -266,7 +266,7 @@ fn main (){
   // --- Rest of the code ---
   let update = &mut new_facebook; // Can only make a single mutable reference.
 
-  // display_data(&new_facebook); Cannot read while writing :D
+  // display_data(&new_facebook); Cannot read while writing 😁
   // let update2 = &mut new_facebook;  throw error here because we can only have mutable reference at the same time.
   update.name = "Facebook 3.0".to_string();
   println!("{} is an awesome name.", new_facebook.name);
@@ -303,7 +303,7 @@ You can do manual [memory management](https://stackoverflow.com/questions/484854
 
 ![Rust laughing at you](assets/foo.png)
 
-
+---
 
 ### Traits
   
@@ -648,9 +648,11 @@ Cons:
 
 ![Little Britain](assets/little_britain.jpg)
 
+---
+
 ### Conditional compilation
 
-Well, you can decide what to compile or not :D
+Well, you can decide what to compile or not 😁
 
 
 ##### Example
@@ -691,7 +693,7 @@ fn add_song() {
 ```
 
 
-We add the function in main as well :D
+We add the function in main as well 😁
 
 ```rust
 fn main() {
@@ -714,12 +716,13 @@ Pros:
 - Super useful to reduce the size of your package and use only what you need
 
 Cons:
-- Use strings, so little helping from the IDE ( just a bit still :D)
+- Use strings, so little helping from the IDE ( just a bit still 😁)
 
 Good example to use for this is [web_sys](https://docs.rs/web-sys/0.3.56/web_sys/) library as bridge between Rust and the Web
 
 ![feeling](assets/python_rust.jpg)
 
+---
 
 ### Multithreading
 
@@ -765,13 +768,13 @@ Let's make 2 fights simultaneously and take the winner for the last one.
 
 Works like a charm. 
 Of Course if my business logic sucks, then it won't work as expected, but that is not the compiler responsibility.
-But unit-test are there for it :D
+But unit-test are there for it 😁
 
 ##### Resume
 
 Pros:
 - Took me 5 minutes to make it work
-- No runtime wrong, if you do something wrong, the compiler will tell you :D
+- No runtime wrong, if you do something wrong, the compiler will tell you 😁
 - You can make t
 
 Cons:
