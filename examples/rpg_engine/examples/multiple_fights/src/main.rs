@@ -38,7 +38,7 @@ fn main() {
 
     let braith = Character::new("Braith", 100.0).grab_weapon(RegularWeapon::default());
 
-    let dovakin = Character::new("Dovakin", 1500.0)
+    let dovahkiin = Character::new("Dovahkiin", 1500.0)
         .grab_weapon(steel_long_sword)
         .grab_weapon(iron_shield);
 
@@ -55,7 +55,7 @@ fn main() {
 
     // This is OS native Thread
     let _ = thread::spawn(move || {
-        let winner = Fight::new(lydia, dovakin).resolve();
+        let winner = Fight::new(lydia, dovahkiin).resolve();
         tx_2.send(winner)
             .expect("Should have passed the resolved winner");
     });
