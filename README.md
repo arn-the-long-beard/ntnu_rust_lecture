@@ -20,7 +20,7 @@
 
 ## History
 
-C is ancient.
+C is ancient 📜
 
 ![C_haters](assets/c_haters.jpeg)
 
