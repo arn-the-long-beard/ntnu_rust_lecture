@@ -124,9 +124,9 @@ The garbage collector issues with a nice example : [discord](https://discord.com
 
 ### Rust Intro
 
-- 2006 personal project at Mozilla
+- 2006 Graydon Hoare personal project at Mozilla
   
-- From OCaml to [LLVM](https://llvm.org/) based compiler written in Rust
+- From [OCaml](https://en.wikipedia.org/wiki/OCaml) to [LLVM](https://llvm.org/) based compiler written in Rust
 
 - [Compile to Native Machine Code](https://stackoverflow.com/questions/43385142/how-is-rust-compiled-to-machine-code/43385776)
 
