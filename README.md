@@ -841,4 +841,7 @@ OMG performances
 
 ![learning curve with rust](assets/learning_curve_rust.jpg)
 
-![More meme stuff](https://github.com/mattsse/cargo-memex)
+[More meme stuff](https://github.com/mattsse/cargo-memex)
+
+
+Thank you for your time :)
